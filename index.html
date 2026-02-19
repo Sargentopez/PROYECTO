@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <title>ComicShow</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/home.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Comic+Neue:wght@400;700&family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- HEADER / NAVBAR -->
+<header class="site-header" id="siteHeader">
+  <div class="header-inner">
+    <div class="logo-area">
+      <a href="index.html" class="logo-link">
+        <span class="logo-main">Comic<span class="logo-accent">Show</span></span>
+      </a>
+      <p class="logo-sub" data-i18n="tagline">Crea y comparte tus cómics</p>
+    </div>
+
+    <!-- Menú hamburguesa para móvil -->
+    <button class="hamburger" id="hamburgerBtn" aria-label="Menú">
+      <span></span><span></span><span></span>
+    </button>
+
+    <!-- Navegación principal -->
+    <nav class="main-nav" id="mainNav">
+      <div class="nav-user" id="navGuest">
+        <a href="pages/register.html" class="btn btn-outline" data-i18n="register">Regístrate</a>
+        <a href="pages/login.html" class="btn btn-primary" data-i18n="login">Inicia sesión</a>
+      </div>
+      <div class="nav-user hidden" id="navLogged">
+        <span class="nav-username" id="navUsername"></span>
+        <div class="dropdown">
+          <button class="btn btn-avatar" id="avatarBtn">
+            <span id="avatarInitial">U</span>
+            <svg viewBox="0 0 10 6" width="10"><path d="M0 0l5 6 5-6z" fill="currentColor"/></svg>
+          </button>
+          <div class="dropdown-menu" id="avatarMenu">
+            <a href="pages/editor.html" class="dropdown-item" data-i18n="myComics">Mis Cómics</a>
+            <a href="#" class="dropdown-item" id="logoutBtn" data-i18n="logout">Cerrar sesión</a>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<!-- HERO SECTION -->
+<section class="hero">
+  <div class="hero-bg">
+    <div class="halftone"></div>
+    <div class="speech-bubble-deco" style="top:10%;left:5%;">¡ZAP!</div>
+    <div class="speech-bubble-deco" style="top:25%;right:8%;font-size:1.2rem">¡POW!</div>
+    <div class="speech-bubble-deco" style="bottom:20%;left:15%;font-size:1rem">¡BOOM!</div>
+  </div>
+  <div class="hero-content">
+    <h1 class="hero-title" data-i18n="heroTitle">ComicShow</h1>
+    <p class="hero-subtitle" data-i18n="heroSubtitle">Crea y comparte tus cómics</p>
+    <a href="pages/editor.html" class="btn btn-hero" id="createBtn" data-i18n="createComic">🎨 Crea tu cómic</a>
+  </div>
+</section>
+
+<!-- LISTADO DE COMICS -->
+<main class="comics-section">
+  <div class="section-header">
+    <h2 class="section-title" data-i18n="allComics">Todos los cómics</h2>
+    <div class="section-filters">
+      <button class="filter-btn active" data-filter="all" data-i18n="filterAll">Todos</button>
+      <button class="filter-btn" data-filter="recent" data-i18n="filterRecent">Recientes</button>
+    </div>
+  </div>
+
+  <div class="comics-grid" id="comicsGrid">
+    <!-- Se genera dinámicamente con JS -->
+    <div class="empty-state" id="emptyState">
+      <div class="empty-icon">📚</div>
+      <p data-i18n="noComics">Aún no hay cómics publicados.</p>
+      <p data-i18n="beFirst">¡Sé el primero en crear uno!</p>
+      <a href="pages/editor.html" class="btn btn-primary" data-i18n="createFirst">Crear mi primer cómic</a>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <p>ComicShow &copy; 2024 &mdash; <span data-i18n="footerTagline">Hecho con viñetas y pasión</span></p>
+</footer>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script src="js/i18n.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/storage.js"></script>
+<script src="js/home.js"></script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js').catch(() => {});
+    });
+  }
+</script>
+</body>
+</html>

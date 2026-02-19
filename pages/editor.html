@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Editor – ComicShow</title>
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/editor.css">
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Comic+Neue:wght@400;700&family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet">
+</head>
+<body class="editor-page">
+
+<header class="site-header">
+  <div class="header-inner">
+    <a href="../index.html" class="logo-link">
+      <span class="logo-main">Comic<span class="logo-accent">Show</span></span>
+    </a>
+    <div class="editor-header-actions">
+      <button class="btn btn-outline" id="saveBtn" data-i18n="saveProject">Guardar</button>
+      <button class="btn btn-primary" id="publishBtn" data-i18n="publishComic">📖 Publicar</button>
+    </div>
+    <button class="hamburger" id="hamburgerBtn" aria-label="Menú">
+      <span></span><span></span><span></span>
+    </button>
+    <nav class="main-nav" id="mainNav">
+      <div class="nav-user" id="navGuest">
+        <a href="login.html" class="btn btn-outline" data-i18n="login">Inicia sesión</a>
+      </div>
+      <div class="nav-user hidden" id="navLogged">
+        <span class="nav-username" id="navUsername"></span>
+        <div class="dropdown">
+          <button class="btn btn-avatar" id="avatarBtn">
+            <span id="avatarInitial">U</span>
+          </button>
+          <div class="dropdown-menu" id="avatarMenu">
+            <a href="editor.html" class="dropdown-item" data-i18n="myComics">Mis Cómics</a>
+            <a href="#" class="dropdown-item" id="logoutBtn" data-i18n="logout">Cerrar sesión</a>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<div class="editor-layout">
+
+  <!-- SIDEBAR IZQUIERDO: Herramientas -->
+  <aside class="editor-sidebar" id="editorSidebar">
+
+    <!-- TAB SWITCH -->
+    <div class="sidebar-tabs">
+      <button class="sidebar-tab active" data-tab="panels" data-i18n="tabPanels">Viñetas</button>
+      <button class="sidebar-tab" data-tab="texts" data-i18n="tabTexts">Textos</button>
+    </div>
+
+    <!-- TAB: VIÑETAS -->
+    <div class="tab-panel active" id="tabPanels">
+
+      <!-- Proyecto -->
+      <div class="sidebar-section">
+        <button class="btn btn-primary btn-full" id="newProjectBtn" data-i18n="newProject">Nuevo proyecto</button>
+      </div>
+
+      <div id="projectForm" class="sidebar-section hidden">
+        <div class="form-group">
+          <label class="form-label" data-i18n="comicTitle">Título del cómic</label>
+          <input type="text" id="comicTitleInput" class="form-input" maxlength="80">
+        </div>
+        <div class="form-group">
+          <label class="form-label" data-i18n="comicDesc">Descripción</label>
+          <textarea id="comicDescInput" class="form-input" rows="2" maxlength="200"></textarea>
+        </div>
+      </div>
+
+      <!-- Upload -->
+      <div class="sidebar-section" id="uploadSection">
+        <p class="sidebar-hint" data-i18n="noProjectYet">Crea un proyecto primero</p>
+      </div>
+
+      <!-- Lista de viñetas -->
+      <div class="panels-list" id="panelsList"></div>
+    </div>
+
+    <!-- TAB: TEXTOS -->
+    <div class="tab-panel" id="tabTexts">
+      <div class="sidebar-section">
+        <p class="sidebar-hint texts-hint" id="textsHint">Selecciona una viñeta para añadir textos</p>
+      </div>
+      <div id="textTools" class="hidden">
+        <div class="sidebar-section text-tools-btns">
+          <button class="btn btn-outline btn-full" id="addDialogBtn" data-i18n="addDialog">💬 Bocadillo</button>
+          <button class="btn btn-outline btn-full" id="addHeaderBtn" data-i18n="addHeader">📋 Cabecera</button>
+          <button class="btn btn-outline btn-full" id="addFooterBtn" data-i18n="addFooter">📝 Pie</button>
+        </div>
+        <div class="sidebar-section">
+          <p class="sidebar-label" data-i18n="dialogOrder">Orden de aparición</p>
+          <div id="dialogOrderList" class="dialog-order-list"></div>
+        </div>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- ÁREA CENTRAL: Vista de viñeta -->
+  <main class="editor-canvas-area" id="editorCanvasArea">
+    <div class="canvas-placeholder" id="canvasPlaceholder">
+      <span>🎨</span>
+      <p data-i18n="newProject">Crea un proyecto y añade viñetas para empezar</p>
+    </div>
+
+    <!-- Visor de viñeta activa -->
+    <div class="panel-viewer hidden" id="panelViewer">
+      <div class="panel-viewer-header">
+        <span id="panelViewerTitle" class="panel-viewer-label">Viñeta 1</span>
+        <div class="panel-orientation-select">
+          <label class="form-label" data-i18n="panelOrientation">Orientación:</label>
+          <select id="panelOrientation" class="form-input form-select">
+            <option value="h" data-i18n="horizontal">Horizontal</option>
+            <option value="v" data-i18n="vertical">Vertical</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Contenedor de la viñeta con capas de texto -->
+      <div class="panel-stage" id="panelStage">
+        <img id="panelImage" src="" alt="">
+        <!-- Capa de textos -->
+        <div class="text-layer" id="textLayer"></div>
+      </div>
+    </div>
+  </main>
+
+</div>
+
+<!-- INPUT file oculto -->
+<input type="file" id="fileInput" accept="image/*,.gif" style="display:none" multiple>
+
+<!-- MODAL: Seleccionar cola del bocadillo -->
+<div class="modal-overlay" id="tailModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span class="modal-title">Dirección de la cola</span>
+      <button class="modal-close" id="tailModalClose">✕</button>
+    </div>
+    <div class="modal-body tail-selector">
+      <p style="margin-bottom:12px;font-size:.9rem;color:var(--gray-700)">Elige desde qué lado saldrá la cola del bocadillo:</p>
+      <div class="tail-options">
+        <button class="tail-opt" data-tail="top" data-i18n="tailTop">↑ Arriba</button>
+        <button class="tail-opt" data-tail="right" data-i18n="tailRight">→ Derecha</button>
+        <button class="tail-opt" data-tail="bottom" data-i18n="tailBottom">↓ Abajo</button>
+        <button class="tail-opt" data-tail="left" data-i18n="tailLeft">← Izquierda</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="../js/i18n.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/storage.js"></script>
+<script src="../js/editor.js"></script>
+</body>
+</html>

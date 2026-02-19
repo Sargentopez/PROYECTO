@@ -1,0 +1,51 @@
+/* auth.css */
+.auth-page { background: var(--paper); }
+.auth-main {
+  min-height: calc(100vh - var(--header-h));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  background-image: radial-gradient(circle, rgba(0,0,0,.06) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+.auth-card {
+  background: var(--white);
+  border: 3px solid var(--black);
+  border-radius: var(--radius);
+  box-shadow: var(--box-shadow-lg);
+  width: 100%;
+  max-width: 420px;
+  overflow: hidden;
+}
+.auth-card-header {
+  background: var(--yellow);
+  border-bottom: 2.5px solid var(--black);
+  padding: 20px 28px;
+}
+.auth-title {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  letter-spacing: 2px;
+}
+.auth-form { padding: 24px 28px; }
+.btn-full { width: 100%; justify-content: center; margin-top: 8px; }
+.auth-switch {
+  text-align: center;
+  padding: 16px;
+  border-top: 1.5px solid var(--gray-100);
+  font-size: 0.9rem;
+  color: var(--gray-700);
+}
+.auth-switch a { color: var(--blue); font-weight: 700; margin-left: 4px; }
+.forgot-row { text-align: right; margin-top: -8px; }
+.forgot-link { font-size: 0.82rem; color: var(--blue); font-weight: 600; }
+.pass-wrap { position: relative; }
+.pass-wrap .form-input { padding-right: 44px; }
+.pass-toggle {
+  position: absolute;
+  right: 10px; top: 50%;
+  transform: translateY(-50%);
+  background: none; border: none;
+  cursor: pointer; font-size: 1.1rem;
+}
