@@ -7,9 +7,10 @@
 
 .editor-header-actions {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   margin-left: auto;
-  margin-right: 12px;
+  margin-right: 6px;
+  flex-shrink: 0;
 }
 
 /* ── LAYOUT ── */
@@ -426,7 +427,7 @@
   .editor-sidebar {
     position: fixed;
     left: 0; top: var(--header-h); bottom: 0;
-    width: 260px;
+    width: 280px;
     transform: translateX(-100%);
     transition: transform .25s;
     z-index: 500;
@@ -434,13 +435,26 @@
   }
   .editor-sidebar.open { transform: translateX(0); }
   .editor-layout { flex-direction: column; }
-  .editor-canvas-area { padding: 12px; }
-  .editor-header-actions .btn { padding: 7px 12px; font-size: .8rem; }
+  .editor-canvas-area { padding: 8px; }
+
+  /* Cabecera del editor en móvil: compacta */
+  .editor-header-actions { margin-right: 4px; gap: 4px; }
+  .editor-header-actions .btn {
+    padding: 6px 10px;
+    font-size: 0.75rem;
+  }
+
+  /* Ocultar texto de botones, mostrar solo iconos en móvil muy pequeño */
+  @media(max-width:400px){
+    #saveBtn span, #publishBtn span { display: none; }
+  }
 
   /* Botón flotante para abrir sidebar en móvil */
-  .sidebar-open-fab {
-    display: flex;
-  }
+  .sidebar-open-fab { display: flex; }
+
+  /* Imagen se ajusta al ancho disponible */
+  .panel-viewer { max-width: 100%; }
+  .panel-stage img#panelImage { max-height: 60vh; object-fit: contain; }
 }
 .sidebar-open-fab {
   display: none;
