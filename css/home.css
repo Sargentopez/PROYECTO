@@ -1,208 +1,236 @@
 /* ============================================================
-   home.css - Página de inicio
+   home.css — Página de inicio
    ============================================================ */
 
-/* ── HERO ── */
-.hero {
-  position: relative;
-  min-height: 320px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  border-bottom: 3px solid var(--black);
-  background: var(--yellow);
+/* ── CABECERA HOME ── */
+.home-header {
+  height: auto;
+  min-height: var(--header-h);
 }
-.hero-bg {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-}
-/* Patrón de semitono tipo cómic */
-.halftone {
-  position: absolute;
-  inset: 0;
-  background-image: radial-gradient(circle, rgba(0,0,0,.12) 1px, transparent 1px);
-  background-size: 18px 18px;
-  opacity: .6;
-}
-/* Decoraciones de onomatopeyas */
-.speech-bubble-deco {
-  position: absolute;
-  font-family: var(--font-display);
-  font-size: 2rem;
-  color: var(--red);
-  letter-spacing: 2px;
-  text-shadow: 3px 3px 0 var(--black);
-  transform: rotate(-8deg);
-  animation: floatBubble 4s ease-in-out infinite alternate;
-  pointer-events: none;
-  user-select: none;
-}
-.speech-bubble-deco:nth-child(2) { animation-delay: -1.5s; transform: rotate(5deg); color: var(--blue); }
-.speech-bubble-deco:nth-child(3) { animation-delay: -3s; transform: rotate(-3deg); color: var(--ink); }
-@keyframes floatBubble {
-  from { transform: translateY(0) rotate(-8deg); }
-  to   { transform: translateY(-10px) rotate(-8deg); }
-}
-.hero-content {
-  position: relative;
-  z-index: 2;
-  text-align: center;
-  padding: 40px 20px;
-}
-.hero-title {
-  font-family: var(--font-display);
-  font-size: clamp(3.5rem, 12vw, 7rem);
-  letter-spacing: 4px;
-  color: var(--black);
-  text-shadow: 5px 5px 0 var(--red), 10px 10px 0 rgba(0,0,0,.15);
-  line-height: 0.95;
-  margin-bottom: 10px;
-}
-.hero-subtitle {
-  font-family: var(--font-comic);
-  font-size: clamp(1rem, 3vw, 1.4rem);
-  font-weight: 700;
-  color: var(--ink);
-  margin-bottom: 28px;
-  background: var(--white);
-  display: inline-block;
-  padding: 4px 16px;
-  border: 2px solid var(--black);
-  border-radius: 4px;
-  box-shadow: 2px 2px 0 var(--black);
-}
-
-/* ── SECCIÓN CÓMICS ── */
-.comics-section {
-  max-width: var(--max-w);
-  margin: 0 auto;
-  padding: 40px 20px;
-}
-.section-header {
+.home-header-inner {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-bottom: 28px;
-  border-bottom: 2.5px solid var(--black);
-  padding-bottom: 12px;
+  padding: 8px 14px;
+  gap: 10px;
+  max-width: 100%;
 }
-.section-title {
-  font-family: var(--font-display);
-  font-size: 2rem;
-  letter-spacing: 2px;
+
+/* Logo y tagline en la misma línea */
+.home-logo-area {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.home-logo-area .logo-main { font-size: 1.8rem; }
+.home-tagline {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--gray-700);
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+
+/* Área de usuario: compacta, sin marcos */
+.home-user-area {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.home-guest {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+.home-user-link {
+  color: var(--ink);
+  text-decoration: none;
+  padding: 2px 0;
+  border-bottom: 1.5px solid transparent;
+  transition: border-color .15s;
+}
+.home-user-link:hover { border-bottom-color: var(--black); }
+.home-user-sep { color: var(--gray-300); }
+
+.home-logged {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.home-username {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--gray-700);
+}
+
+/* Botón 3 puntos */
+.home-dots-btn {
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  cursor: pointer;
+  color: var(--gray-700);
+  padding: 0 4px;
+  line-height: 1;
+  letter-spacing: 1px;
+}
+.home-dots-btn:hover { color: var(--black); }
+
+/* ── BARRA DE FILTROS ── */
+.home-filters {
+  display: flex;
+  align-items: center;
+  border-bottom: 1.5px solid var(--gray-300);
+  background: var(--white);
+  padding: 0 14px;
+}
+.home-filter {
+  flex: 1;
+  background: none;
+  border: none;
+  padding: 11px 4px;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: var(--gray-500);
+  cursor: pointer;
+  text-align: center;
+  position: relative;
+  transition: color .15s;
+}
+.home-filter:hover { color: var(--ink); }
+.home-filter.active {
   color: var(--ink);
 }
-.section-filters { display: flex; gap: 8px; }
-.filter-btn {
-  padding: 6px 16px;
-  border: 2px solid var(--black);
-  border-radius: 20px;
-  background: var(--white);
-  font-weight: 700;
-  font-size: 0.85rem;
-  cursor: pointer;
-  transition: background .15s;
+.home-filter.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1.5px; left: 10%; right: 10%;
+  height: 2.5px;
+  background: var(--black);
+  border-radius: 2px;
 }
-.filter-btn.active, .filter-btn:hover { background: var(--yellow); }
-
-/* ── GRID DE CÓMICS ── */
-.comics-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 24px;
+/* Separador vertical entre filtros */
+.home-filter-sep {
+  width: 1px;
+  height: 18px;
+  background: var(--gray-300);
+  flex-shrink: 0;
 }
 
-/* ── TARJETA DE CÓMIC ── */
-.comic-card {
-  background: var(--white);
-  border: 2.5px solid var(--black);
-  border-radius: var(--radius);
-  box-shadow: var(--box-shadow-lg);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  transition: transform .15s, box-shadow .15s;
-  cursor: pointer;
-}
-.comic-card:hover {
-  transform: translate(-3px,-3px);
-  box-shadow: 8px 8px 0 var(--black);
-}
-.comic-card-thumb {
+/* ── LISTA DE CÓMICS ── */
+.home-list {
+  padding: 0;
+  max-width: var(--max-w);
+  margin: 0 auto;
   width: 100%;
-  aspect-ratio: 3/2;
-  object-fit: cover;
-  border-bottom: 2px solid var(--black);
+}
+
+/* ── TARJETA DE CÓMIC: miniatura cuadrada pequeña + info a la derecha ── */
+.comic-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--gray-100);
+  background: var(--white);
+}
+.comic-row:active { background: var(--gray-100); }
+
+/* Miniatura cuadrada, sin marco */
+.comic-row-thumb {
+  width: 72px;
+  height: 72px;
+  flex-shrink: 0;
   background: var(--gray-100);
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 3rem;
+  font-size: 1.8rem;
   color: var(--gray-300);
 }
-.comic-card-thumb img {
-  width: 100%; height: 100%;
+.comic-row-thumb img {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
+  display: block;
 }
-.comic-card-body {
-  padding: 14px 16px;
+
+/* Info: título, autor, botones */
+.comic-row-info {
   flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 3px;
+  padding-top: 1px;
 }
-.comic-card-title {
-  font-family: var(--font-display);
-  font-size: 1.3rem;
-  letter-spacing: 1px;
+.comic-row-title {
+  font-family: var(--font-body);
+  font-weight: 900;
+  font-size: 0.95rem;
   color: var(--ink);
-  line-height: 1.1;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-.comic-card-author {
-  font-size: 0.82rem;
+.comic-row-author {
+  font-size: 0.78rem;
   color: var(--gray-500);
   font-weight: 600;
-}
-.comic-card-author span { color: var(--blue); font-weight: 700; }
-.comic-card-desc {
-  font-size: 0.88rem;
-  color: var(--gray-700);
-  flex: 1;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
+  white-space: nowrap;
   overflow: hidden;
+  text-overflow: ellipsis;
 }
-.comic-card-actions {
+.comic-row-author a {
+  color: var(--blue);
+  font-weight: 700;
+}
+.comic-row-actions {
   display: flex;
-  gap: 8px;
-  padding: 12px 16px;
-  border-top: 1.5px solid var(--gray-100);
-  background: var(--gray-100);
+  gap: 10px;
+  margin-top: 5px;
 }
-.comic-card-actions .btn { flex: 1; justify-content: center; font-size: 0.85rem; padding: 8px 10px; }
+.comic-row-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.82rem;
+  color: var(--blue);
+  cursor: pointer;
+  text-decoration: none;
+}
+.comic-row-btn:hover { text-decoration: underline; }
+.comic-row-btn.edit  { color: var(--gray-700); }
 
 /* ── ESTADO VACÍO ── */
-.empty-state {
-  grid-column: 1/-1;
+.home-empty {
   text-align: center;
-  padding: 80px 20px;
+  padding: 60px 20px;
+  color: var(--gray-500);
+  font-size: 0.95rem;
+  font-weight: 600;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
 }
-.empty-icon { font-size: 4rem; }
-.empty-state p { font-size: 1.1rem; color: var(--gray-500); font-weight: 600; }
+.home-empty span { font-size: 3rem; }
+.home-empty.hidden { display: none; }
 
-@media(max-width:480px){
-  .comics-grid { grid-template-columns: 1fr 1fr; gap: 14px; }
-  .comic-card-title { font-size: 1.05rem; }
-}
-@media(max-width:360px){
-  .comics-grid { grid-template-columns: 1fr; }
+/* ── PC: un poco más de espacio ── */
+@media(min-width: 600px) {
+  .home-filters { padding: 0 24px; }
+  .home-list    { padding: 0; }
+  .comic-row    { padding: 14px 24px; }
+  .comic-row-thumb { width: 88px; height: 88px; }
+  .comic-row-title { font-size: 1rem; }
 }
