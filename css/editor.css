@@ -1,3 +1,18 @@
+/* ── Cabecera minimalista (compartida con home) ── */
+.home-logo-area {
+  display: flex; flex-direction: column;
+  align-items: flex-start; flex-shrink: 0;
+}
+.home-logo-area .logo-main { font-size: 1.8rem; line-height: 1; }
+.home-tagline {
+  font-size: 0.65rem; font-weight: 700;
+  color: var(--gray-700); white-space: nowrap;
+  line-height: 1.2; margin-top: 1px;
+}
+.home-user-area { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.home-username  { font-size: 0.78rem; font-weight: 700; color: var(--gray-700); }
+.home-dots-btn  { background: none; border: none; font-size: 1.3rem; cursor: pointer; color: var(--gray-700); padding: 2px 4px; }
+
 /* ============================================================
    editor.css
    ============================================================ */

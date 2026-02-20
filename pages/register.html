@@ -10,52 +10,39 @@
 </head>
 <body class="auth-page">
 
-<header class="site-header">
-  <div class="header-inner">
-    <a href="../index.html" class="logo-link">
-      <span class="logo-main">Comic<span class="logo-accent">Show</span></span>
-    </a>
-    <button class="hamburger" id="hamburgerBtn" aria-label="Menú">
-      <span></span><span></span><span></span>
-    </button>
-    <nav class="main-nav" id="mainNav">
-      <div class="nav-user" id="navGuest">
-        <a href="login.html" class="btn btn-primary" data-i18n="login">Inicia sesión</a>
-      </div>
-      <div class="nav-user hidden" id="navLogged">
-        <span class="nav-username" id="navUsername"></span>
-        <div class="dropdown">
-          <button class="btn btn-avatar" id="avatarBtn">
-            <span id="avatarInitial">U</span>
-          </button>
-          <div class="dropdown-menu" id="avatarMenu">
-            <a href="editor.html" class="dropdown-item" data-i18n="myComics">Mis Cómics</a>
-            <a href="#" class="dropdown-item" id="logoutBtn" data-i18n="logout">Cerrar sesión</a>
-          </div>
-        </div>
-      </div>
-    </nav>
+<header class="site-header home-header">
+  <div class="home-header-inner">
+    <div class="home-logo-area">
+      <a href="../index.html" class="logo-link">
+        <span class="logo-main">Comic<span class="logo-accent">Show</span></span>
+      </a>
+      <span class="home-tagline">Crea y comparte tus cómics</span>
+    </div>
+    <div class="home-user-area">
+      <a href="login.html" class="home-user-link" style="font-size:.8rem;font-weight:700">Entrar</a>
+      <button class="home-dots-btn" title="Más opciones">⋮</button>
+    </div>
   </div>
 </header>
 
 <main class="auth-main">
   <div class="auth-card">
     <div class="auth-card-header">
-      <h1 class="auth-title" data-i18n="pageRegister">Crear Cuenta</h1>
+      <h1 class="auth-title">Crear cuenta</h1>
     </div>
     <form id="registerForm" class="auth-form" novalidate>
       <div class="form-group">
-        <label class="form-label" for="regUsername" data-i18n="username">Nombre de usuario</label>
+        <label class="form-label" for="regUsername">Nombre de usuario</label>
         <input type="text" id="regUsername" class="form-input" autocomplete="username" required>
         <span class="form-error" id="usernameError"></span>
       </div>
       <div class="form-group">
-        <label class="form-label" for="regEmail" data-i18n="email">Email</label>
+        <label class="form-label" for="regEmail">Email</label>
         <input type="email" id="regEmail" class="form-input" autocomplete="email" required>
         <span class="form-error" id="emailError"></span>
       </div>
       <div class="form-group">
-        <label class="form-label" for="regPass" data-i18n="password">Contraseña</label>
+        <label class="form-label" for="regPass">Contraseña</label>
         <div class="pass-wrap">
           <input type="password" id="regPass" class="form-input" autocomplete="new-password" required>
           <button type="button" class="pass-toggle" id="passToggle">👁</button>
@@ -63,21 +50,19 @@
         <span class="form-error" id="passError"></span>
       </div>
       <div class="form-group">
-        <label class="form-label" for="regPassConf" data-i18n="passwordConf">Confirmar contraseña</label>
+        <label class="form-label" for="regPassConf">Confirmar contraseña</label>
         <input type="password" id="regPassConf" class="form-input" autocomplete="new-password" required>
         <span class="form-error" id="passConfError"></span>
       </div>
-      <button type="submit" class="btn btn-primary btn-full" data-i18n="submitRegister">Crear cuenta</button>
+      <button type="submit" class="btn btn-primary btn-full">Crear cuenta</button>
     </form>
     <p class="auth-switch">
-      <span data-i18n="hasAccount">¿Ya tienes cuenta?</span>
-      <a href="login.html" data-i18n="login">Inicia sesión</a>
+      ¿Ya tienes cuenta? <a href="login.html">Entrar</a>
     </p>
   </div>
 </main>
 
 <div class="toast" id="toast"></div>
-
 <script src="../js/i18n.js"></script>
 <script src="../js/auth.js"></script>
 <script src="../js/auth-pages.js"></script>
