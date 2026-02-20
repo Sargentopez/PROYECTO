@@ -1,19 +1,16 @@
 /* ============================================================
-   editor.js — Lógica completa del editor de cómics
+   editor.js — Editor con menús desplegables
    ============================================================ */
 
-// ── Estado global del editor ──
 const EditorState = {
-  comic:          null,   // objeto cómic actual
-  activePanelIdx: -1,     // índice de viñeta activa
-  pendingTailCb:  null,   // callback cola bocadillo
+  comic:          null,
+  activePanelIdx: -1,
+  pendingTailCb:  null,
   draggingPanel:  null,
-  draggingBubble: null,
 };
 
 // ── Init ──
 document.addEventListener('DOMContentLoaded', () => {
-  // Verificar sesión
   if (!Auth.isLogged()) {
     window.location.href = 'login.html?redirect=editor';
     return;
@@ -25,12 +22,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (comicId) {
     const c = ComicStore.getById(comicId);
-    // Solo el autor puede editar
     if (c && c.userId === Auth.currentUser().id) {
       EditorState.comic = c;
-      renderSidebarPanels();
       loadProjectForm();
-      showProjectForm(true);
+      showProjectFormSection(true);
+      showUploadSection(true);
+      renderPanelsList();
+      if (c.panels.length > 0) selectPanel(0);
     } else {
       showToast('No tienes permiso para editar este cómic');
       setTimeout(() => { window.location.href = '../index.html'; }, 1500);
@@ -38,28 +36,74 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  setupDropdowns();
   setupEventListeners();
   I18n.applyAll();
 });
 
-function setupEventListeners() {
-  // Tabs
-  document.querySelectorAll('.sidebar-tab').forEach(tab => {
-    tab.addEventListener('click', () => switchTab(tab.dataset.tab));
+// ── MENÚS DESPLEGABLES ──
+function setupDropdowns() {
+  const menus = [
+    { btnId: 'btnMenuProyecto', panelId: 'panelProyecto' },
+    { btnId: 'btnMenuVinetas',  panelId: 'panelVinetas'  },
+    { btnId: 'btnMenuTextos',   panelId: 'panelTextos'   },
+  ];
+
+  menus.forEach(({ btnId, panelId }) => {
+    const btn   = document.getElementById(btnId);
+    const panel = document.getElementById(panelId);
+    if (!btn || !panel) return;
+
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = panel.classList.contains('open');
+      // Cerrar todos
+      menus.forEach(m => {
+        document.getElementById(m.panelId)?.classList.remove('open');
+        document.getElementById(m.btnId)?.classList.remove('open');
+      });
+      // Abrir el pulsado si estaba cerrado
+      if (!isOpen) {
+        panel.classList.add('open');
+        btn.classList.add('open');
+        // Activar capa de texto si es menú textos
+        const textLayer = document.getElementById('textLayer');
+        if (panelId === 'panelTextos' && textLayer) {
+          textLayer.classList.add('editable');
+        } else if (textLayer) {
+          textLayer.classList.remove('editable');
+        }
+      }
+    });
   });
 
+  // Cerrar al pulsar fuera
+  document.addEventListener('click', () => {
+    menus.forEach(m => {
+      document.getElementById(m.panelId)?.classList.remove('open');
+      document.getElementById(m.btnId)?.classList.remove('open');
+    });
+  });
+
+  // Evitar cierre al hacer clic dentro del panel
+  document.querySelectorAll('.editor-dropdown-panel').forEach(panel => {
+    panel.addEventListener('click', e => e.stopPropagation());
+  });
+}
+
+// ── EVENT LISTENERS ──
+function setupEventListeners() {
   // Nuevo proyecto
   document.getElementById('newProjectBtn').addEventListener('click', () => {
     const user = Auth.currentUser();
     EditorState.comic = ComicStore.createNew(user.id, user.username);
-    showProjectForm(true);
+    showProjectFormSection(true);
     showUploadSection(true);
+    loadProjectForm();
   });
 
-  // Guardar
+  // Guardar y publicar
   document.getElementById('saveBtn').addEventListener('click', saveComic);
-
-  // Publicar
   document.getElementById('publishBtn').addEventListener('click', () => {
     saveComic();
     if (EditorState.comic) {
@@ -72,7 +116,7 @@ function setupEventListeners() {
   // Subir archivo
   document.getElementById('fileInput').addEventListener('change', handleFileUpload);
 
-  // Orientación de viñeta
+  // Orientación
   document.getElementById('panelOrientation').addEventListener('change', (e) => {
     if (EditorState.activePanelIdx < 0) return;
     EditorState.comic.panels[EditorState.activePanelIdx].orientation = e.target.value;
@@ -80,7 +124,7 @@ function setupEventListeners() {
   });
 
   // Botones de texto
-  document.getElementById('addDialogBtn').addEventListener('click', () => addBubble('dialog'));
+  document.getElementById('addDialogBtn').addEventListener('click', () => addBubble());
   document.getElementById('addHeaderBtn').addEventListener('click', () => addTextBlock('header'));
   document.getElementById('addFooterBtn').addEventListener('click', () => addTextBlock('footer'));
 
@@ -99,56 +143,50 @@ function setupEventListeners() {
       }
     });
   });
-
-  // FAB sidebar móvil
-  addSidebarFAB();
-}
-
-// ── TABS ──
-function switchTab(tabName) {
-  document.querySelectorAll('.sidebar-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tabName));
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === 'tab' + capitalize(tabName)));
-
-  if (tabName === 'texts') {
-    const textLayer = document.getElementById('textLayer');
-    if (textLayer) textLayer.classList.add('editable');
-    updateTextTools();
-  } else {
-    const textLayer = document.getElementById('textLayer');
-    if (textLayer) textLayer.classList.remove('editable');
-  }
 }
 
 // ── PROYECTO ──
-function showProjectForm(show) {
-  document.getElementById('projectForm').classList.toggle('hidden', !show);
+function showProjectFormSection(show) {
+  const s = document.getElementById('projectFormSection');
+  if (s) s.style.display = show ? 'block' : 'none';
 }
-function showUploadSection(show) {
-  const section = document.getElementById('uploadSection');
-  if (!show) { section.innerHTML = '<p class="sidebar-hint" data-i18n="noProjectYet">' + I18n.t('noProjectYet') + '</p>'; return; }
-  section.innerHTML = `
-    <div class="upload-zone" id="uploadZone">
-      <div style="font-size:1.8rem;margin-bottom:4px">📁</div>
-      <strong>${I18n.t('uploadPanel')}</strong>
-      <p style="font-size:.78rem;margin-top:4px;color:var(--gray-500)">JPG, PNG, GIF — arrastrar o click</p>
-    </div>
-  `;
-  document.getElementById('uploadZone').addEventListener('click', () => {
-    document.getElementById('fileInput').click();
-  });
-  document.getElementById('uploadZone').addEventListener('dragover', e => { e.preventDefault(); e.currentTarget.style.borderColor = 'var(--blue)'; });
-  document.getElementById('uploadZone').addEventListener('dragleave', e => { e.currentTarget.style.borderColor = ''; });
-  document.getElementById('uploadZone').addEventListener('drop', e => {
-    e.preventDefault();
-    e.currentTarget.style.borderColor = '';
-    const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/'));
-    processFiles(files);
-  });
-}
+
 function loadProjectForm() {
   if (!EditorState.comic) return;
   document.getElementById('comicTitleInput').value = EditorState.comic.title || '';
-  document.getElementById('comicDescInput').value   = EditorState.comic.desc  || '';
+  document.getElementById('comicDescInput').value  = EditorState.comic.desc  || '';
+}
+
+function showUploadSection(show) {
+  const section = document.getElementById('uploadSection');
+  const hint    = document.getElementById('uploadHint');
+  if (!show) { if (hint) hint.style.display = 'block'; return; }
+  if (hint) hint.style.display = 'none';
+
+  // Evitar duplicar la zona de subida
+  if (document.getElementById('uploadZone')) return;
+
+  const zone = document.createElement('div');
+  zone.className = 'upload-zone';
+  zone.id = 'uploadZone';
+  zone.innerHTML = `
+    <div style="font-size:1.8rem;margin-bottom:4px">📁</div>
+    <strong>Subir viñeta</strong>
+    <p style="font-size:.78rem;margin-top:4px;color:var(--gray-500)">JPG, PNG, GIF</p>
+  `;
+  zone.addEventListener('click', () => document.getElementById('fileInput').click());
+  zone.addEventListener('dragover', e => { e.preventDefault(); zone.style.borderColor = 'var(--blue)'; });
+  zone.addEventListener('dragleave', () => zone.style.borderColor = '');
+  zone.addEventListener('drop', e => {
+    e.preventDefault();
+    zone.style.borderColor = '';
+    processFiles(Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/')));
+  });
+  section.appendChild(zone);
+
+  // Mostrar selector de orientación
+  const orientSection = document.getElementById('orientationSection');
+  if (orientSection) orientSection.style.display = 'block';
 }
 
 // ── GUARDAR ──
@@ -162,10 +200,10 @@ function saveComic() {
 
 // ── UPLOAD ──
 function handleFileUpload(e) {
-  const files = Array.from(e.target.files);
-  processFiles(files);
+  processFiles(Array.from(e.target.files));
   e.target.value = '';
 }
+
 function processFiles(files) {
   if (!EditorState.comic) { showToast(I18n.t('noProjectYet')); return; }
   files.forEach(file => {
@@ -178,7 +216,7 @@ function processFiles(files) {
         texts:       []
       };
       EditorState.comic.panels.push(panel);
-      renderSidebarPanels();
+      renderPanelsList();
       selectPanel(EditorState.comic.panels.length - 1);
       saveComic();
     };
@@ -186,8 +224,8 @@ function processFiles(files) {
   });
 }
 
-// ── RENDERIZAR LISTA LATERAL ──
-function renderSidebarPanels() {
+// ── LISTA DE VIÑETAS ──
+function renderPanelsList() {
   const list = document.getElementById('panelsList');
   list.innerHTML = '';
   if (!EditorState.comic || EditorState.comic.panels.length === 0) return;
@@ -196,32 +234,28 @@ function renderSidebarPanels() {
     const item = document.createElement('div');
     item.className = 'panel-thumb-item' + (idx === EditorState.activePanelIdx ? ' active' : '');
     item.draggable = true;
-    item.dataset.idx = idx;
     item.innerHTML = `
-      <span class="drag-handle" title="Arrastrar">⠿</span>
+      <span class="drag-handle">⠿</span>
       <img class="panel-thumb-img" src="${panel.dataUrl}" alt="Viñeta ${idx+1}">
       <div class="panel-thumb-info">
         <div class="panel-thumb-num">Viñeta ${idx + 1}</div>
       </div>
       <div class="panel-thumb-actions">
-        <button title="Eliminar" data-action="del" style="color:var(--red)">🗑</button>
+        <button data-action="del" style="color:var(--red)" title="Eliminar">🗑</button>
       </div>
     `;
 
     item.addEventListener('click', (e) => {
-      if (e.target.closest('[data-action="del"]')) {
-        deletePanel(idx); return;
-      }
+      if (e.target.closest('[data-action="del"]')) { deletePanel(idx); return; }
       selectPanel(idx);
+      // Cerrar menú al seleccionar viñeta en móvil
+      document.getElementById('panelVinetas')?.classList.remove('open');
+      document.getElementById('btnMenuVinetas')?.classList.remove('open');
     });
 
-    // Drag-and-drop para reordenar
-    item.addEventListener('dragstart', () => {
-      EditorState.draggingPanel = idx;
-      item.classList.add('dragging');
-    });
-    item.addEventListener('dragend', () => item.classList.remove('dragging'));
-    item.addEventListener('dragover', (e) => { e.preventDefault(); item.classList.add('drag-over'); });
+    item.addEventListener('dragstart', () => { EditorState.draggingPanel = idx; item.classList.add('dragging'); });
+    item.addEventListener('dragend',   () => item.classList.remove('dragging'));
+    item.addEventListener('dragover',  (e) => { e.preventDefault(); item.classList.add('drag-over'); });
     item.addEventListener('dragleave', () => item.classList.remove('drag-over'));
     item.addEventListener('drop', (e) => {
       e.preventDefault();
@@ -229,13 +263,12 @@ function renderSidebarPanels() {
       const from = EditorState.draggingPanel;
       const to   = idx;
       if (from !== null && from !== to) {
-        const panels = EditorState.comic.panels;
-        const [moved] = panels.splice(from, 1);
-        panels.splice(to, 0, moved);
+        const [moved] = EditorState.comic.panels.splice(from, 1);
+        EditorState.comic.panels.splice(to, 0, moved);
         EditorState.activePanelIdx = to;
-        renderSidebarPanels();
-        saveComic();
+        renderPanelsList();
         renderPanelViewer();
+        saveComic();
       }
     });
 
@@ -246,9 +279,12 @@ function renderSidebarPanels() {
 // ── SELECCIONAR VIÑETA ──
 function selectPanel(idx) {
   EditorState.activePanelIdx = idx;
-  renderSidebarPanels();
+  renderPanelsList();
   renderPanelViewer();
   updateTextTools();
+  // Actualizar selector de orientación
+  const panel = EditorState.comic.panels[idx];
+  if (panel) document.getElementById('panelOrientation').value = panel.orientation || 'h';
 }
 
 function deletePanel(idx) {
@@ -257,7 +293,7 @@ function deletePanel(idx) {
   if (EditorState.activePanelIdx >= EditorState.comic.panels.length) {
     EditorState.activePanelIdx = EditorState.comic.panels.length - 1;
   }
-  renderSidebarPanels();
+  renderPanelsList();
   renderPanelViewer();
   saveComic();
 }
@@ -280,7 +316,6 @@ function renderPanelViewer() {
   const panel = EditorState.comic.panels[idx];
   document.getElementById('panelImage').src = panel.dataUrl;
   document.getElementById('panelViewerTitle').textContent = `Viñeta ${idx + 1}`;
-  document.getElementById('panelOrientation').value = panel.orientation || 'h';
 
   renderTextLayer();
 }
@@ -288,40 +323,31 @@ function renderPanelViewer() {
 // ── CAPA DE TEXTOS ──
 function renderTextLayer() {
   const idx = EditorState.activePanelIdx;
-  if (idx < 0) return;
+  if (idx < 0 || !EditorState.comic) return;
   const panel = EditorState.comic.panels[idx];
   const layer = document.getElementById('textLayer');
   layer.innerHTML = '';
 
-  // Determinar si estamos en modo textos
-  const inTextMode = document.getElementById('tabTexts').classList.contains('... ');
-  layer.classList.toggle('editable', document.querySelector('.sidebar-tab[data-tab="texts"]')?.classList.contains('active'));
-
   (panel.texts || []).forEach(textObj => {
-    if (textObj.type === 'dialog') {
-      renderBubble(textObj, layer, panel);
-    } else {
-      renderTextBlock(textObj, layer, panel);
-    }
+    if (textObj.type === 'dialog') renderBubble(textObj, layer, panel);
+    else renderTextBlock(textObj, layer, panel);
   });
 }
 
 // ── BOCADILLO ──
-function addBubble(type) {
-  if (EditorState.activePanelIdx < 0) { showToast('Selecciona una viñeta'); return; }
-  // Pedir cola
+function addBubble() {
+  if (EditorState.activePanelIdx < 0) { showToast('Selecciona una viñeta primero'); return; }
   EditorState.pendingTailCb = (tail) => {
     const panel = EditorState.comic.panels[EditorState.activePanelIdx];
-    const textObj = {
-      id:     't_' + Date.now(),
-      type:   'dialog',
-      text:   I18n.t('writeText'),
-      tail,
-      x: 30, y: 20, // % del tamaño de la viñeta
-      order: (panel.texts || []).filter(t => t.type === 'dialog').length
-    };
     if (!panel.texts) panel.texts = [];
-    panel.texts.push(textObj);
+    panel.texts.push({
+      id:    't_' + Date.now(),
+      type:  'dialog',
+      text:  I18n.t('writeText'),
+      tail,
+      x: 10, y: 10,
+      order: panel.texts.filter(t => t.type === 'dialog').length
+    });
     renderTextLayer();
     updateDialogOrderList();
     saveComic();
@@ -348,15 +374,12 @@ function renderBubble(textObj, layer, panel) {
     </div>
   `;
 
-  // Drag para mover
   makeDraggable(wrapper, textObj, panel);
 
-  // Botones
   wrapper.querySelector('[data-action="editText"]').addEventListener('click', (e) => {
     e.stopPropagation();
     const span = wrapper.querySelector('.bubble-text');
-    const isEditing = span.contentEditable === 'true';
-    if (isEditing) {
+    if (span.contentEditable === 'true') {
       textObj.text = span.textContent;
       span.contentEditable = 'false';
       e.target.textContent = I18n.t('editBtn');
@@ -391,45 +414,32 @@ function renderBubble(textObj, layer, panel) {
 }
 
 function buildTailSVG(tail) {
+  // La punta del triángulo (vértice inferior) apunta siempre HACIA FUERA del bocadillo
   const cls = 'bubble-tail tail-' + (tail || 'bottom');
-  return `
-    <svg class="${cls}" viewBox="0 0 28 20" xmlns="http://www.w3.org/2000/svg">
-      <path d="M4 0 L14 20 L24 0" fill="white" stroke="black" stroke-width="2.5" stroke-linejoin="round"/>
-    </svg>`;
+  return `<svg class="${cls}" viewBox="0 0 28 20" xmlns="http://www.w3.org/2000/svg">
+    <path d="M4 0 L14 20 L24 0" fill="white" stroke="black" stroke-width="2.5" stroke-linejoin="round"/>
+  </svg>`;
 }
 
-// ── ARRASTRAR BOCADILLO ──
 function makeDraggable(wrapper, textObj, panel) {
   let startX, startY, startLeft, startTop;
-  const stage = document.getElementById('panelStage');
-
-  wrapper.addEventListener('mousedown', startDrag);
-  wrapper.addEventListener('touchstart', startDrag, { passive: false });
 
   function startDrag(e) {
-    if (e.target.tagName === 'BUTTON' || e.target.tagName === 'SPAN' && e.target.contentEditable === 'true') return;
+    if (e.target.tagName === 'BUTTON' || (e.target.contentEditable === 'true')) return;
     e.preventDefault();
-    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-    const rect = stage.getBoundingClientRect();
-    startX    = clientX;
-    startY    = clientY;
+    const stage = document.getElementById('panelStage');
+    const rect  = stage.getBoundingClientRect();
+    startX    = e.touches ? e.touches[0].clientX : e.clientX;
+    startY    = e.touches ? e.touches[0].clientY : e.clientY;
     startLeft = textObj.x;
     startTop  = textObj.y;
-
-    document.addEventListener('mousemove', onDrag);
-    document.addEventListener('mouseup', endDrag);
-    document.addEventListener('touchmove', onDrag, { passive: false });
-    document.addEventListener('touchend', endDrag);
 
     function onDrag(ev) {
       ev.preventDefault();
       const cx = ev.touches ? ev.touches[0].clientX : ev.clientX;
       const cy = ev.touches ? ev.touches[0].clientY : ev.clientY;
-      const dx = ((cx - startX) / rect.width) * 100;
-      const dy = ((cy - startY) / rect.height) * 100;
-      textObj.x = Math.max(0, Math.min(80, startLeft + dx));
-      textObj.y = Math.max(0, Math.min(90, startTop  + dy));
+      textObj.x = Math.max(0, Math.min(80, startLeft + ((cx - startX) / rect.width)  * 100));
+      textObj.y = Math.max(0, Math.min(90, startTop  + ((cy - startY) / rect.height) * 100));
       wrapper.style.left = textObj.x + '%';
       wrapper.style.top  = textObj.y + '%';
     }
@@ -440,18 +450,23 @@ function makeDraggable(wrapper, textObj, panel) {
       document.removeEventListener('touchend', endDrag);
       saveComic();
     }
+    document.addEventListener('mousemove', onDrag);
+    document.addEventListener('mouseup', endDrag);
+    document.addEventListener('touchmove', onDrag, { passive: false });
+    document.addEventListener('touchend', endDrag);
   }
+
+  wrapper.addEventListener('mousedown', startDrag);
+  wrapper.addEventListener('touchstart', startDrag, { passive: false });
 }
 
 // ── TEXTO CABECERA / PIE ──
 function addTextBlock(type) {
-  if (EditorState.activePanelIdx < 0) { showToast('Selecciona una viñeta'); return; }
+  if (EditorState.activePanelIdx < 0) { showToast('Selecciona una viñeta primero'); return; }
   const panel = EditorState.comic.panels[EditorState.activePanelIdx];
-  // Solo uno de cada tipo
-  if ((panel.texts || []).find(t => t.type === type)) return;
-  const textObj = { id: 't_' + Date.now(), type, text: I18n.t('writeText') };
   if (!panel.texts) panel.texts = [];
-  panel.texts.push(textObj);
+  if (panel.texts.find(t => t.type === type)) { showToast('Ya existe un ' + type + ' en esta viñeta'); return; }
+  panel.texts.push({ id: 't_' + Date.now(), type, text: I18n.t('writeText') });
   renderTextLayer();
   saveComic();
 }
@@ -459,70 +474,52 @@ function addTextBlock(type) {
 function renderTextBlock(textObj, layer, panel) {
   const block = document.createElement('div');
   block.className = 'panel-text-block ' + (textObj.type === 'header' ? 'header-block' : 'footer-block');
-  block.dataset.id = textObj.id;
   block.innerHTML = `
-    <button class="block-del" data-action="del" title="${I18n.t('deleteBtn')}">✕</button>
+    <button class="block-del" title="Eliminar">✕</button>
     <span contenteditable="true">${escHtml(textObj.text)}</span>
   `;
-
-  const span = block.querySelector('span');
-  span.addEventListener('blur', () => {
-    textObj.text = span.textContent;
-    saveComic();
-  });
-
-  block.querySelector('[data-action="del"]').addEventListener('click', () => {
+  block.querySelector('span').addEventListener('blur', (e) => { textObj.text = e.target.textContent; saveComic(); });
+  block.querySelector('.block-del').addEventListener('click', () => {
     panel.texts = panel.texts.filter(t => t.id !== textObj.id);
     renderTextLayer();
     saveComic();
   });
-
   layer.appendChild(block);
 }
 
-// ── ORDEN DE DIÁLOGOS ──
+// ── HERRAMIENTAS DE TEXTO ──
 function updateTextTools() {
-  const idx = EditorState.activePanelIdx;
-  const hint    = document.getElementById('textsHint');
-  const tools   = document.getElementById('textTools');
-
-  if (!EditorState.comic || idx < 0) {
-    hint && hint.classList.remove('hidden');
-    tools && tools.classList.add('hidden');
-    return;
-  }
-  hint && hint.classList.add('hidden');
-  tools && tools.classList.remove('hidden');
-  updateDialogOrderList();
+  const idx   = EditorState.activePanelIdx;
+  const hint  = document.getElementById('textsHint');
+  const tools = document.getElementById('textTools');
+  const hasPanel = EditorState.comic && idx >= 0;
+  if (hint)  hint.style.display  = hasPanel ? 'none'  : 'block';
+  if (tools) tools.style.display = hasPanel ? 'block' : 'none';
+  if (hasPanel) updateDialogOrderList();
 }
 
 function updateDialogOrderList() {
-  const idx = EditorState.activePanelIdx;
+  const idx    = EditorState.activePanelIdx;
   const listEl = document.getElementById('dialogOrderList');
   if (!listEl || !EditorState.comic || idx < 0) return;
 
   const panel   = EditorState.comic.panels[idx];
-  const dialogs = (panel.texts || []).filter(t => t.type === 'dialog');
-  dialogs.sort((a, b) => (a.order||0) - (b.order||0));
+  const dialogs = (panel.texts || []).filter(t => t.type === 'dialog').sort((a,b) => (a.order||0)-(b.order||0));
   listEl.innerHTML = '';
 
   dialogs.forEach((d, i) => {
     const item = document.createElement('div');
     item.className = 'dialog-order-item';
     item.draggable = true;
-    item.dataset.id = d.id;
-    item.innerHTML = `
-      <div class="order-num">${i+1}</div>
-      <div class="order-text">${escHtml(d.text || '...')}</div>
-    `;
+    item.innerHTML = `<div class="order-num">${i+1}</div><div class="order-text">${escHtml(d.text||'...')}</div>`;
     let dragSrc = null;
     item.addEventListener('dragstart', () => { dragSrc = i; });
-    item.addEventListener('dragover', e => { e.preventDefault(); });
+    item.addEventListener('dragover',  e => e.preventDefault());
     item.addEventListener('drop', () => {
       if (dragSrc === null || dragSrc === i) return;
       const [moved] = dialogs.splice(dragSrc, 1);
       dialogs.splice(i, 0, moved);
-      dialogs.forEach((d, idx) => d.order = idx);
+      dialogs.forEach((d, j) => d.order = j);
       updateDialogOrderList();
       saveComic();
     });
@@ -530,36 +527,7 @@ function updateDialogOrderList() {
   });
 }
 
-// ── FAB SIDEBAR MÓVIL ──
-function addSidebarFAB() {
-  const fab = document.createElement('button');
-  fab.className = 'sidebar-open-fab';
-  fab.innerHTML = '🗂';
-  fab.title = 'Herramientas';
-  document.body.appendChild(fab);
-
-  const overlay = document.createElement('div');
-  overlay.className = 'sidebar-overlay';
-  document.body.appendChild(overlay);
-
-  const sidebar = document.getElementById('editorSidebar');
-  fab.addEventListener('click', () => {
-    sidebar.classList.toggle('open');
-    overlay.classList.toggle('open');
-  });
-  overlay.addEventListener('click', () => {
-    sidebar.classList.remove('open');
-    overlay.classList.remove('open');
-  });
-}
-
 // ── UTILS ──
-function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
-
 function escHtml(str) {
-  return String(str)
-    .replace(/&/g,'&amp;')
-    .replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;');
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
