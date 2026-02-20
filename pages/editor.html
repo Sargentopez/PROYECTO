@@ -10,150 +10,147 @@
 </head>
 <body class="editor-page">
 
-<header class="site-header">
-  <div class="header-inner">
+<header class="site-header editor-site-header">
+  <div class="editor-header-inner">
+
     <a href="../index.html" class="logo-link">
       <span class="logo-main">Comic<span class="logo-accent">Show</span></span>
     </a>
-    <div class="editor-header-actions">
-      <button class="btn btn-outline" id="saveBtn" data-i18n="saveProject">Guardar</button>
-      <button class="btn btn-primary" id="publishBtn" data-i18n="publishComic">📖 Publicar</button>
-    </div>
-    <button class="hamburger" id="hamburgerBtn" aria-label="Menú">
-      <span></span><span></span><span></span>
-    </button>
-    <nav class="main-nav" id="mainNav">
-      <div class="nav-user" id="navGuest">
-        <a href="login.html" class="btn btn-outline" data-i18n="login">Inicia sesión</a>
-      </div>
-      <div class="nav-user hidden" id="navLogged">
-        <span class="nav-username" id="navUsername"></span>
-        <div class="dropdown">
-          <button class="btn btn-avatar" id="avatarBtn">
-            <span id="avatarInitial">U</span>
-          </button>
-          <div class="dropdown-menu" id="avatarMenu">
-            <a href="editor.html" class="dropdown-item" data-i18n="myComics">Mis Cómics</a>
-            <a href="#" class="dropdown-item" id="logoutBtn" data-i18n="logout">Cerrar sesión</a>
+
+    <!-- Menús (aparecen solo cuando hay proyecto activo) -->
+    <nav class="editor-menus" id="editorMenus" style="display:none">
+
+      <div class="editor-dropdown">
+        <button class="editor-menu-btn" data-menu="menuVinetas">🖼 Viñetas ▾</button>
+        <div class="editor-dropdown-panel" id="menuVinetas">
+          <div class="edrop-section" id="uploadSection">
+            <p class="edrop-hint">Crea un proyecto primero</p>
+          </div>
+          <div class="edrop-section" id="orientationSection" style="display:none">
+            <label class="edrop-label">Orientación de esta viñeta:</label>
+            <select id="panelOrientation" class="form-input form-select">
+              <option value="h">↔ Horizontal</option>
+              <option value="v">↕ Vertical</option>
+            </select>
+          </div>
+          <div class="edrop-section">
+            <div class="panels-list" id="panelsList"></div>
           </div>
         </div>
       </div>
+
+      <div class="editor-dropdown">
+        <button class="editor-menu-btn" data-menu="menuTextos">💬 Textos ▾</button>
+        <div class="editor-dropdown-panel" id="menuTextos">
+          <div class="edrop-section">
+            <p class="edrop-hint" id="textsHint">Selecciona una viñeta primero</p>
+            <div id="textTools" style="display:none">
+              <div class="edrop-btns">
+                <button class="btn btn-outline btn-full" id="addDialogBtn">💬 Bocadillo de diálogo</button>
+                <button class="btn btn-outline btn-full" id="addHeaderBtn">📋 Texto cabecera</button>
+                <button class="btn btn-outline btn-full" id="addFooterBtn">📝 Texto pie</button>
+              </div>
+              <div style="margin-top:14px">
+                <p class="edrop-label">Orden de aparición en lectura:</p>
+                <div id="dialogOrderList" class="dialog-order-list"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </nav>
+
+    <!-- Guardar / Publicar -->
+    <div class="editor-actions" id="editorActions" style="display:none">
+      <button class="btn btn-outline editor-btn" id="saveBtn">💾 Guardar</button>
+      <button class="btn btn-primary editor-btn" id="publishBtn">📖 Publicar</button>
+    </div>
+
+    <!-- Usuario -->
+    <div class="nav-user hidden" id="navLogged">
+      <div class="dropdown">
+        <button class="btn btn-avatar" id="avatarBtn"><span id="avatarInitial">U</span></button>
+        <div class="dropdown-menu" id="avatarMenu">
+          <a href="editor.html" class="dropdown-item">Mis Cómics</a>
+          <a href="#" class="dropdown-item" id="logoutBtn">Cerrar sesión</a>
+        </div>
+      </div>
+    </div>
+    <div class="nav-user" id="navGuest">
+      <a href="login.html" class="btn btn-outline editor-btn">Entrar</a>
+    </div>
+
   </div>
 </header>
 
-<div class="editor-layout">
+<!-- PANTALLA 1: Lista de proyectos -->
+<main id="screenProjects" class="projects-screen">
+  <div class="projects-header">
+    <h2 class="projects-title">Mis cómics</h2>
+    <button class="btn btn-primary" id="newProjectBtn">✨ Nuevo proyecto</button>
+  </div>
+  <div class="projects-grid" id="projectsGrid"></div>
+</main>
 
-  <!-- SIDEBAR IZQUIERDO: Herramientas -->
-  <aside class="editor-sidebar" id="editorSidebar">
-
-    <!-- TAB SWITCH -->
-    <div class="sidebar-tabs">
-      <button class="sidebar-tab active" data-tab="panels" data-i18n="tabPanels">Viñetas</button>
-      <button class="sidebar-tab" data-tab="texts" data-i18n="tabTexts">Textos</button>
+<!-- PANTALLA 2: Editor de viñeta -->
+<main id="screenEditor" class="editor-canvas-area" style="display:none">
+  <div class="canvas-placeholder" id="canvasPlaceholder">
+    <span>🖼</span>
+    <p>Abre <strong>Viñetas ▾</strong> y sube tu primera imagen</p>
+  </div>
+  <div class="panel-viewer hidden" id="panelViewer">
+    <div class="panel-stage" id="panelStage">
+      <img id="panelImage" src="" alt="">
+      <div class="text-layer" id="textLayer"></div>
     </div>
+    <div class="panel-num-bar" id="panelNumBar">Viñeta 1</div>
+  </div>
+</main>
 
-    <!-- TAB: VIÑETAS -->
-    <div class="tab-panel active" id="tabPanels">
-
-      <!-- Proyecto -->
-      <div class="sidebar-section">
-        <button class="btn btn-primary btn-full" id="newProjectBtn" data-i18n="newProject">Nuevo proyecto</button>
-      </div>
-
-      <div id="projectForm" class="sidebar-section hidden">
-        <div class="form-group">
-          <label class="form-label" data-i18n="comicTitle">Título del cómic</label>
-          <input type="text" id="comicTitleInput" class="form-input" maxlength="80">
-        </div>
-        <div class="form-group">
-          <label class="form-label" data-i18n="comicDesc">Descripción</label>
-          <textarea id="comicDescInput" class="form-input" rows="2" maxlength="200"></textarea>
-        </div>
-      </div>
-
-      <!-- Upload -->
-      <div class="sidebar-section" id="uploadSection">
-        <p class="sidebar-hint" data-i18n="noProjectYet">Crea un proyecto primero</p>
-      </div>
-
-      <!-- Lista de viñetas -->
-      <div class="panels-list" id="panelsList"></div>
+<!-- Modal: Nuevo proyecto -->
+<div class="modal-overlay" id="projectModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span class="modal-title">Nuevo proyecto</span>
+      <button class="modal-close" id="projectModalClose">✕</button>
     </div>
-
-    <!-- TAB: TEXTOS -->
-    <div class="tab-panel" id="tabTexts">
-      <div class="sidebar-section">
-        <p class="sidebar-hint texts-hint" id="textsHint">Selecciona una viñeta para añadir textos</p>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Título del cómic</label>
+        <input type="text" id="comicTitleInput" class="form-input" maxlength="80" placeholder="Escribe el título...">
       </div>
-      <div id="textTools" class="hidden">
-        <div class="sidebar-section text-tools-btns">
-          <button class="btn btn-outline btn-full" id="addDialogBtn" data-i18n="addDialog">💬 Bocadillo</button>
-          <button class="btn btn-outline btn-full" id="addHeaderBtn" data-i18n="addHeader">📋 Cabecera</button>
-          <button class="btn btn-outline btn-full" id="addFooterBtn" data-i18n="addFooter">📝 Pie</button>
-        </div>
-        <div class="sidebar-section">
-          <p class="sidebar-label" data-i18n="dialogOrder">Orden de aparición</p>
-          <div id="dialogOrderList" class="dialog-order-list"></div>
-        </div>
+      <div class="form-group">
+        <label class="form-label">Descripción (opcional)</label>
+        <textarea id="comicDescInput" class="form-input" rows="2" maxlength="200" placeholder="Breve descripción..."></textarea>
       </div>
     </div>
-
-  </aside>
-
-  <!-- ÁREA CENTRAL: Vista de viñeta -->
-  <main class="editor-canvas-area" id="editorCanvasArea">
-    <div class="canvas-placeholder" id="canvasPlaceholder">
-      <span>🎨</span>
-      <p data-i18n="newProject">Crea un proyecto y añade viñetas para empezar</p>
+    <div class="modal-footer">
+      <button class="btn btn-primary" id="projectModalSave">Crear proyecto</button>
     </div>
-
-    <!-- Visor de viñeta activa -->
-    <div class="panel-viewer hidden" id="panelViewer">
-      <div class="panel-viewer-header">
-        <span id="panelViewerTitle" class="panel-viewer-label">Viñeta 1</span>
-        <div class="panel-orientation-select">
-          <label class="form-label" data-i18n="panelOrientation">Orientación:</label>
-          <select id="panelOrientation" class="form-input form-select">
-            <option value="h" data-i18n="horizontal">Horizontal</option>
-            <option value="v" data-i18n="vertical">Vertical</option>
-          </select>
-        </div>
-      </div>
-
-      <!-- Contenedor de la viñeta con capas de texto -->
-      <div class="panel-stage" id="panelStage">
-        <img id="panelImage" src="" alt="">
-        <!-- Capa de textos -->
-        <div class="text-layer" id="textLayer"></div>
-      </div>
-    </div>
-  </main>
-
+  </div>
 </div>
 
-<!-- INPUT file oculto -->
-<input type="file" id="fileInput" accept="image/*,.gif" style="display:none" multiple>
-
-<!-- MODAL: Seleccionar cola del bocadillo -->
+<!-- Modal: Cola del bocadillo -->
 <div class="modal-overlay" id="tailModal">
   <div class="modal-box">
     <div class="modal-header">
-      <span class="modal-title">Dirección de la cola</span>
+      <span class="modal-title">Cola del bocadillo</span>
       <button class="modal-close" id="tailModalClose">✕</button>
     </div>
     <div class="modal-body tail-selector">
-      <p style="margin-bottom:12px;font-size:.9rem;color:var(--gray-700)">Elige desde qué lado saldrá la cola del bocadillo:</p>
+      <p style="margin-bottom:12px;font-size:.9rem;color:var(--gray-700)">¿Desde qué lado sale la cola?</p>
       <div class="tail-options">
-        <button class="tail-opt" data-tail="top" data-i18n="tailTop">↑ Arriba</button>
-        <button class="tail-opt" data-tail="right" data-i18n="tailRight">→ Derecha</button>
-        <button class="tail-opt" data-tail="bottom" data-i18n="tailBottom">↓ Abajo</button>
-        <button class="tail-opt" data-tail="left" data-i18n="tailLeft">← Izquierda</button>
+        <button class="tail-opt" data-tail="top">↑ Arriba</button>
+        <button class="tail-opt" data-tail="right">→ Derecha</button>
+        <button class="tail-opt" data-tail="bottom">↓ Abajo</button>
+        <button class="tail-opt" data-tail="left">← Izquierda</button>
       </div>
     </div>
   </div>
 </div>
 
+<input type="file" id="fileInput" accept="image/*,.gif" style="display:none" multiple>
 <div class="toast" id="toast"></div>
 
 <script src="../js/i18n.js"></script>

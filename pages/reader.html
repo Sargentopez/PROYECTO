@@ -11,40 +11,36 @@
 </head>
 <body class="reader-page">
 
-<!-- CONTROLES superiores (solo PC) -->
+<!-- Barra superior: solo PC -->
 <div class="reader-topbar" id="readerTopbar">
-  <a href="../index.html" class="btn btn-ghost reader-home" data-i18n="readerBack">🏠 Inicio</a>
+  <a href="../index.html" class="reader-home-btn" title="Volver al inicio">🏠</a>
   <div class="reader-info">
     <span class="reader-comic-title" id="readerComicTitle"></span>
-    <span class="reader-panel-num" id="readerPanelNum">1 / 1</span>
-  </div>
-  <div class="reader-nav-btns">
-    <button class="btn btn-outline" id="prevBtn" data-i18n="readerPrev">← Anterior</button>
-    <button class="btn btn-primary" id="nextBtn" data-i18n="readerNext">Siguiente →</button>
+    <span class="reader-panel-num"   id="readerPanelNum">1 / 1</span>
   </div>
 </div>
 
-<!-- ÁREA PRINCIPAL DE LECTURA -->
-<div class="reader-stage" id="readerStage">
-  <!-- Las viñetas se inyectan aquí -->
-</div>
+<!-- Área de lectura -->
+<div class="reader-stage" id="readerStage"></div>
 
-<!-- OVERLAY FIN DEL CÓMIC -->
+<!-- Flechas de navegación: solo PC, discretas, sobre el stage -->
+<button class="reader-arrow reader-arrow-left"  id="prevBtn" title="Anterior">‹</button>
+<button class="reader-arrow reader-arrow-right" id="nextBtn" title="Siguiente">›</button>
+
+<!-- Fin del cómic -->
 <div class="reader-end-overlay hidden" id="endOverlay">
   <div class="end-card">
     <div class="end-icon">🎉</div>
-    <h2 data-i18n="endOfComic">¡Fin del cómic!</h2>
+    <h2>¡Fin del cómic!</h2>
     <div class="end-actions">
-      <button class="btn btn-outline" id="restartBtn" data-i18n="readerRestart">Volver a viñeta 1</button>
-      <a href="../index.html" class="btn btn-primary" data-i18n="readerExit">Salir</a>
+      <button class="btn btn-outline" id="restartBtn">↩ Volver al inicio</button>
+      <a href="../index.html" class="btn btn-primary">🏠 Salir</a>
     </div>
   </div>
 </div>
 
-<!-- INDICADOR DE GESTOS -->
-<div class="swipe-hint" id="swipeHint">
-  <span>👉 Desliza para avanzar</span>
-</div>
+<!-- Hint swipe móvil -->
+<div class="swipe-hint" id="swipeHint">👉 Desliza para avanzar</div>
 
 <div class="toast" id="toast"></div>
 
