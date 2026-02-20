@@ -71,17 +71,22 @@
     </div>
 
     <!-- Usuario -->
-    <div class="nav-user hidden" id="navLogged">
-      <div class="dropdown">
-        <button class="btn btn-avatar" id="avatarBtn"><span id="avatarInitial">U</span></button>
-        <div class="dropdown-menu" id="avatarMenu">
-          <a href="editor.html" class="dropdown-item">Mis Cómics</a>
-          <a href="#" class="dropdown-item" id="logoutBtn">Cerrar sesión</a>
+    <div class="home-user-area">
+      <div id="navLogged" class="home-logged hidden">
+        <div class="dropdown">
+          <button class="home-user-link" id="avatarBtn" style="background:none;border:none;cursor:pointer;font-size:.8rem;font-weight:700;color:var(--ink);padding:0">
+            <span id="navUsername"></span> ▾
+          </button>
+          <div class="dropdown-menu" id="avatarMenu">
+            <a href="editor.html" class="dropdown-item">Mis Cómics</a>
+            <a href="#" class="dropdown-item" id="logoutBtn">Cerrar sesión</a>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="nav-user" id="navGuest">
-      <a href="login.html" class="btn btn-outline editor-btn">Entrar</a>
+      <div id="navGuest" class="home-guest hidden">
+        <a href="login.html" class="home-user-link">Entrar</a>
+      </div>
+      <button class="home-dots-btn" title="Más opciones">⋮</button>
     </div>
 
   </div>

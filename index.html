@@ -35,9 +35,10 @@
       </div>
       <!-- Con sesión -->
       <div id="navLogged" class="home-logged hidden">
-        <span class="home-username" id="navUsername"></span>
         <div class="dropdown">
-          <button class="btn-avatar" id="avatarBtn"><span id="avatarInitial">U</span></button>
+          <button class="home-user-link home-username-btn" id="avatarBtn" style="background:none;border:none;cursor:pointer;font-size:.8rem;font-weight:700;color:var(--ink);padding:0">
+            <span id="navUsername"></span> ▾
+          </button>
           <div class="dropdown-menu" id="avatarMenu">
             <a href="pages/editor.html" class="dropdown-item">Mis Cómics</a>
             <a href="#" class="dropdown-item" id="logoutBtn">Cerrar sesión</a>
