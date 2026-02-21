@@ -4,24 +4,6 @@
 
 document.addEventListener('DOMContentLoaded', () => {
   renderComics('all');
-  setupFilters();
-  // Botón Crear
-  document.getElementById('createBtn').addEventListener('click', () => {
-    if (!Auth.isLogged()) {
-      window.location.href = 'pages/login.html?redirect=editor';
-    } else {
-      window.location.href = 'pages/editor.html';
-    }
-  });
-
-  const heroCreateBtn = document.getElementById('heroCreateBtn');
-  heroCreateBtn?.addEventListener('click', (e) => {
-    if (!Auth.isLogged()) {
-      e.preventDefault();
-      window.location.href = 'pages/login.html?redirect=editor';
-    }
-  });
-
   // Mostrar/ocultar opciones según sesión
   const dotsRegister = document.getElementById('dotsRegister');
   const dotsDelete   = document.getElementById('dotsDeleteAccount');
@@ -34,19 +16,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-
-
-// ── FILTROS ──
-function setupFilters() {
-  document.querySelectorAll('.home-filter[data-filter]').forEach(btn => {
-    if (btn.id === 'createBtn') return;
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.home-filter').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      renderComics(btn.dataset.filter);
-    });
-  });
-}
 
 // ── RENDER ──
 function renderComics(filter = 'all') {
@@ -134,7 +103,7 @@ function buildRow(comic, currentUser) {
       if (confirm('¿Quieres retirar este cómic del índice?\n\nPodrás seguir editándolo desde "Crear" → "Mis cómics".')) {
         comic.published = false;
         ComicStore.save(comic);
-        renderComics(document.querySelector('.home-filter.active')?.dataset.filter || 'all');
+        renderComics('all');
         showToast(I18n.t('comicUnpublished'));
       }
     });
@@ -147,7 +116,7 @@ function buildRow(comic, currentUser) {
     delBtn.addEventListener('click', () => {
       if (confirm('Si eliminas este proyecto, ya no podrás acceder a él.\n\nSi solo quieres que no esté publicado pero quieres seguir editándolo, elige "Dejar de publicar".')) {
         ComicStore.remove(comic.id);
-        renderComics(document.querySelector('.home-filter.active')?.dataset.filter || 'all');
+        renderComics('all');
         showToast('Cómic eliminado');
       }
     });

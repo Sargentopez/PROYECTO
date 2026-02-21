@@ -30,7 +30,6 @@ document.addEventListener('DOMContentLoaded', () => {
   goToPanel(0);
   setupControls();
   enableAndroidFullscreen();
-  showSwipeHint();
   I18n.applyAll();
 });
 
@@ -275,15 +274,6 @@ function requestOrientationLock(orient) {
   screen.orientation.lock(orient === 'v' ? 'portrait' : 'landscape').catch(() => {});
 }
 
-// ════════════════════════════════════════
-// SWIPE HINT
-// ════════════════════════════════════════
-function showSwipeHint() {
-  const hint = document.getElementById('swipeHint');
-  if (!hint) return;
-  setTimeout(() => { hint.style.opacity = '0'; }, 2500);
-  setTimeout(() => { hint.style.display = 'none'; }, 3200);
-}
 
 function escHtml(str) {
   return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');

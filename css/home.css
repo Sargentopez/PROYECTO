@@ -210,10 +210,3 @@
 /* Botones owner en fila */
 .comic-row-btn.unpub { color: var(--gray-500); }
 .comic-row-btn.del   { color: var(--red); }
-
-
-.home-hero { max-width: var(--max-w); margin: 12px auto; padding: 10px 14px 16px; }
-.home-hero-title { font-family: var(--font-display); font-size: 2.1rem; letter-spacing: 2px; }
-.home-hero-subtitle { font-weight: 700; color: var(--gray-700); margin-top: 2px; }
-.home-hero-actions { display:flex; gap:8px; margin-top: 10px; flex-wrap: wrap; }
-.home-hero-actions .btn { font-size: .86rem; padding: 8px 12px; }
