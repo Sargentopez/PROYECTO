@@ -6,8 +6,6 @@ document.addEventListener('DOMContentLoaded', () => {
   Auth.updateNavUI();
   renderComics('all');
   setupFilters();
-  setupDropdowns();
-
   // Botón Crear
   document.getElementById('createBtn').addEventListener('click', () => {
     if (!Auth.isLogged()) {
@@ -17,31 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Cerrar sesión
-  document.getElementById('logoutBtn').addEventListener('click', (e) => {
-    e.preventDefault();
-    Auth.logout();
-    window.location.reload();
-  });
-
-  // Eliminar cuenta
-  document.getElementById('dotsDeleteAccount').addEventListener('click', (e) => {
-    e.preventDefault();
-    if (!Auth.isLogged()) { showToast('No hay sesión iniciada'); return; }
-    if (confirm('¿Eliminar tu cuenta? Se borrarán todos tus datos y cómics. Esta acción no se puede deshacer.')) {
-      const user = Auth.currentUser();
-      // Eliminar todos los cómics del usuario
-      ComicStore.getByUser(user.id).forEach(c => ComicStore.remove(c.id));
-      Auth.deleteAccount();
-      window.location.reload();
-    }
-  });
-
-  // Mostrar/ocultar "Registrarse" en el menú ⋮ según sesión
-  updateDotsMenu();
-});
-
-function updateDotsMenu() {
+  // Mostrar/ocultar opciones según sesión
   const dotsRegister = document.getElementById('dotsRegister');
   const dotsDelete   = document.getElementById('dotsDeleteAccount');
   if (Auth.isLogged()) {
@@ -51,34 +25,9 @@ function updateDotsMenu() {
     if (dotsRegister) dotsRegister.style.display = 'block';
     if (dotsDelete)   dotsDelete.style.display   = 'none';
   }
-}
+});
 
-// ── DROPDOWNS ──
-function setupDropdowns() {
-  // Avatar / nombre
-  const avatarBtn  = document.getElementById('avatarBtn');
-  const avatarMenu = document.getElementById('avatarMenu');
-  avatarBtn?.addEventListener('click', (e) => {
-    e.stopPropagation();
-    avatarMenu.classList.toggle('open');
-    document.getElementById('dotsMenu').classList.remove('open');
-  });
 
-  // ⋮ menú
-  const dotsBtn  = document.getElementById('dotsBtn');
-  const dotsMenu = document.getElementById('dotsMenu');
-  dotsBtn?.addEventListener('click', (e) => {
-    e.stopPropagation();
-    dotsMenu.classList.toggle('open');
-    avatarMenu?.classList.remove('open');
-  });
-
-  // Cerrar al hacer clic fuera
-  document.addEventListener('click', () => {
-    avatarMenu?.classList.remove('open');
-    dotsMenu?.classList.remove('open');
-  });
-}
 
 // ── FILTROS ──
 function setupFilters() {

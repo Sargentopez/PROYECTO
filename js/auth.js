@@ -93,16 +93,33 @@ const Auth = (() => {
       });
     }
 
-    // Dropdown avatar
+    // Dropdown avatar / nombre usuario
     const avatarBtn  = document.getElementById('avatarBtn');
     const avatarMenu = document.getElementById('avatarMenu');
     if (avatarBtn && avatarMenu) {
       avatarBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         avatarMenu.classList.toggle('open');
+        document.getElementById('dotsMenu')?.classList.remove('open');
       });
-      document.addEventListener('click', () => avatarMenu.classList.remove('open'));
     }
+
+    // Dropdown ⋮ tres puntos
+    const dotsBtn  = document.getElementById('dotsBtn');
+    const dotsMenu = document.getElementById('dotsMenu');
+    if (dotsBtn && dotsMenu) {
+      dotsBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        dotsMenu.classList.toggle('open');
+        avatarMenu?.classList.remove('open');
+      });
+    }
+
+    // Cerrar todos los dropdowns al hacer clic fuera
+    document.addEventListener('click', () => {
+      avatarMenu?.classList.remove('open');
+      dotsMenu?.classList.remove('open');
+    });
 
     // Logout
     const logoutBtn = document.getElementById('logoutBtn');
@@ -112,6 +129,23 @@ const Auth = (() => {
         logout();
         showToast(I18n.t('logoutOk'));
         setTimeout(() => { window.location.href = getRootPath() + 'index.html'; }, 800);
+      });
+    }
+
+    // Eliminar cuenta (si existe el botón)
+    const deleteAccountBtn = document.getElementById('dotsDeleteAccount');
+    if (deleteAccountBtn) {
+      deleteAccountBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (!isLogged()) { showToast('No hay sesión iniciada'); return; }
+        if (confirm('Si eliminas tu cuenta se borrarán todos tus datos y cómics.\n\nEsta acción no se puede deshacer.')) {
+          const user = currentUser();
+          // Eliminar cómics del usuario
+          const ComicStoreRef = window.ComicStore;
+          if (ComicStoreRef) ComicStoreRef.getByUser(user.id).forEach(c => ComicStoreRef.remove(c.id));
+          deleteAccount();
+          window.location.reload();
+        }
       });
     }
   });
