@@ -13,32 +13,28 @@
 </head>
 <body class="home-page">
 
+  <nav class="home-filters" aria-label="Filtros principales">
+    <button class="home-filter" data-filter="filter" id="filterBtn" data-i18n="homeFilter">Filtrar</button>
+    <span class="home-filter-sep" aria-hidden="true"></span>
+    <button class="home-filter active" data-filter="recent" data-i18n="homeLatest">Nuevos</button>
+    <span class="home-filter-sep" aria-hidden="true"></span>
+    <button class="home-filter" data-filter="create" id="createBtn" data-i18n="homeCreate">Crear</button>
+  </nav>
 
+  <main class="home-list" id="comicsGrid">
+    <div class="home-empty hidden" id="emptyState">
+      <span>📚</span>
+      <p data-i18n="noComics">Aún no hay cómics publicados.</p>
+      <p data-i18n="beFirst">¡Sé el primero en crear uno!</p>
+    </div>
+  </main>
 
+  <div class="toast" id="toast"></div>
 
-<!-- ══ FILTROS ══ -->
-<nav class="home-filters">
-  <button class="home-filter" data-filter="filter" id="filterBtn" data-i18n="homeFilter">Filtrar</button>
-  <span class="home-filter-sep"></span>
-  <button class="home-filter active" data-filter="recent" data-i18n="homeLatest">Nuevos</button>
-  <span class="home-filter-sep"></span>
-  <button class="home-filter" data-filter="create" id="createBtn" data-i18n="homeCreate">Crear</button>
-</nav>
-
-<!-- ══ LISTA ══ -->
-<main class="home-list" id="comicsGrid">
-  <div class="home-empty hidden" id="emptyState">
-    <span>📚</span>
-    <p data-i18n="noComics">Aún no hay cómics publicados.</p>
-    <p data-i18n="beFirst">¡Sé el primero en crear uno!</p>
-  </div>
-</main>
-
-<div class="toast" id="toast"></div>
-<script src="js/i18n.js?v=20260222"></script>
-<script src="js/auth.js?v=20260222"></script>
-<script src="js/storage.js?v=20260222"></script>
-<script src="js/header.js?v=20260222"></script>
-<script src="js/home.js?v=20260222"></script>
+  <script src="js/i18n.js?v=20260222"></script>
+  <script src="js/auth.js?v=20260222"></script>
+  <script src="js/storage.js?v=20260222"></script>
+  <script src="js/header.js?v=20260222"></script>
+  <script src="js/home.js?v=20260222"></script>
 </body>
 </html>
