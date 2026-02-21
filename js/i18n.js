@@ -1,6 +1,4 @@
-/* ============================================================
-   i18n.js — Sistema de internacionalización
-   ============================================================ */
+/* i18n.js — Sistema de internacionalización */
 
 const TRANSLATIONS = {
   es: {
