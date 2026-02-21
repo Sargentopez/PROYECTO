@@ -102,6 +102,8 @@ const Auth = (() => {
         avatarMenu.classList.toggle('open');
         document.getElementById('dotsMenu')?.classList.remove('open');
       });
+    } else {
+      console.warn('[Auth] avatarBtn o avatarMenu no encontrado', {avatarBtn, avatarMenu});
     }
 
     // Dropdown ⋮ tres puntos
@@ -113,12 +115,14 @@ const Auth = (() => {
         dotsMenu.classList.toggle('open');
         avatarMenu?.classList.remove('open');
       });
+    } else {
+      console.warn('[Auth] dotsBtn o dotsMenu no encontrado', {dotsBtn, dotsMenu});
     }
 
     // Cerrar todos los dropdowns al hacer clic fuera
     document.addEventListener('click', () => {
-      avatarMenu?.classList.remove('open');
-      dotsMenu?.classList.remove('open');
+      document.getElementById('avatarMenu')?.classList.remove('open');
+      document.getElementById('dotsMenu')?.classList.remove('open');
     });
 
     // Logout
@@ -159,10 +163,10 @@ const Auth = (() => {
   function deleteAccount() {
     const user = currentUser();
     if (!user) return;
-    const users = JSON.parse(localStorage.getItem('cs_users') || '[]')
-      .filter(u => u.id !== user.id);
-    localStorage.setItem('cs_users', JSON.stringify(users));
-    localStorage.removeItem('cs_session');
+    const users = getUsers(); // object keyed by email
+    Object.keys(users).forEach(k => { if (users[k].id === user.id) delete users[k]; });
+    saveUsers(users);
+    logout();
   }
 
   return { register, login, logout, deleteAccount, currentUser, isLogged, updateNavUI, getRootPath };
