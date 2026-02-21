@@ -89,14 +89,14 @@ function buildRow(comic, currentUser) {
   const readBtn = document.createElement('a');
   readBtn.className = 'comic-row-btn';
   readBtn.href = `pages/reader.html?id=${comic.id}`;
-  readBtn.textContent = 'Leer';
+  readBtn.textContent = I18n.t('read');
   actions.appendChild(readBtn);
 
   if (isOwner) {
     const editBtn = document.createElement('a');
     editBtn.className = 'comic-row-btn edit';
     editBtn.href = `pages/editor.html?id=${comic.id}`;
-    editBtn.textContent = 'Editar';
+    editBtn.textContent = I18n.t('edit');
     actions.appendChild(editBtn);
 
     const unpubBtn = document.createElement('button');
@@ -106,8 +106,8 @@ function buildRow(comic, currentUser) {
       if (confirm('¿Retirar este cómic del índice?\n\nPodrás seguir editándolo desde "Crear" → "Mis cómics".')) {
         comic.published = false;
         ComicStore.save(comic);
-        renderComics(document.querySelector('.home-filter.active')?.dataset.filter || 'all');
-        showToast('Cómic retirado del índice');
+        renderComics('all');
+        showToast(I18n.t('comicUnpublished'));
       }
     });
     actions.appendChild(unpubBtn);
@@ -118,7 +118,7 @@ function buildRow(comic, currentUser) {
     delBtn.addEventListener('click', () => {
       if (confirm('Si eliminas este proyecto, ya no podrás acceder a él.\n\nSi solo quieres que no esté publicado pero quieres seguir editándolo, elige "Dejar de publicar".')) {
         ComicStore.remove(comic.id);
-        renderComics(document.querySelector('.home-filter.active')?.dataset.filter || 'all');
+        renderComics('all');
         showToast('Cómic eliminado');
       }
     });

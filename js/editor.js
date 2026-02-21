@@ -400,131 +400,6 @@ function addBubble() {
   }, 50);
 }
 
-function renderBubble(textObj, layer, panel) {
-  const wrapper = document.createElement('div');
-  wrapper.className = 'bubble-wrapper';
-  wrapper.style.left = textObj.x + '%';
-  wrapper.style.top  = textObj.y + '%';
-  wrapper.dataset.id = textObj.id;
-
-  // Texto del bocadillo
-  const inner = document.createElement('div');
-  inner.className = 'bubble-inner';
-
-  const textSpan = document.createElement('div');
-  textSpan.className = 'bubble-text';
-  textSpan.dataset.placeholder = 'Escribe aquí...';
-  textSpan.contentEditable = 'false';
-  textSpan.textContent = textObj.text;
-
-  inner.appendChild(textSpan);
-  inner.appendChild(buildTailSVG(textObj.tail));
-
-  // 8 puntos de cola
-  const tailPoints = document.createElement('div');
-  tailPoints.className = 'bubble-tail-points';
-  const positions = ['top-left','top','top-right','right','bottom-right','bottom','bottom-left','left'];
-  positions.forEach(pos => {
-    const pt = document.createElement('div');
-    pt.className = 'tail-point' + (textObj.tail === pos ? ' active' : '');
-    pt.dataset.pos = pos;
-    pt.title = pos;
-    pt.addEventListener('click', (e) => {
-      e.stopPropagation();
-      textObj.tail = pos;
-      // Actualizar cola SVG
-      inner.querySelector('.bubble-tail')?.remove();
-      inner.appendChild(buildTailSVG(pos));
-      // Actualizar punto activo
-      tailPoints.querySelectorAll('.tail-point').forEach(p => p.classList.toggle('active', p.dataset.pos === pos));
-      saveComic();
-    });
-    tailPoints.appendChild(pt);
-  });
-  inner.appendChild(tailPoints);
-
-  // Controles
-  const controls = document.createElement('div');
-  controls.className = 'bubble-controls';
-  controls.innerHTML = `
-    <button class="bubble-ctrl-btn save"   data-action="save">💾 Guardar</button>
-    <button class="bubble-ctrl-btn"        data-action="txt">✏️ Txt</button>
-    <button class="bubble-ctrl-btn danger" data-action="del">✕ Eliminar</button>
-  `;
-
-  controls.querySelector('[data-action="save"]').addEventListener('click', (e) => {
-    e.stopPropagation();
-    textObj.text = textSpan.textContent;
-    exitEditMode(wrapper, textSpan);
-    saveComic();
-    updateDialogOrderList();
-  });
-
-  controls.querySelector('[data-action="txt"]').addEventListener('click', (e) => {
-    e.stopPropagation();
-    textSpan.contentEditable = 'true';
-    textSpan.focus();
-    // Colocar cursor al final
-    const range = document.createRange();
-    range.selectNodeContents(textSpan);
-    range.collapse(false);
-    window.getSelection().removeAllRanges();
-    window.getSelection().addRange(range);
-  });
-
-  controls.querySelector('[data-action="del"]').addEventListener('click', (e) => {
-    e.stopPropagation();
-    panel.texts = panel.texts.filter(t => t.id !== textObj.id);
-    renderTextLayer();
-    updateDialogOrderList();
-    saveComic();
-  });
-
-  wrapper.appendChild(inner);
-  wrapper.appendChild(controls);
-
-  // Click en bocadillo: entrar en modo edición
-  inner.addEventListener('click', (e) => {
-    e.stopPropagation();
-    // Cerrar otros bocadillos en edición
-    document.querySelectorAll('.bubble-wrapper.editing').forEach(w => {
-      if (w !== wrapper) {
-        const s = w.querySelector('.bubble-text');
-        const t = getBubbleTextObj(w.dataset.id, panel);
-        if (t && s) t.text = s.textContent;
-        exitEditMode(w, s);
-      }
-    });
-    enterEditMode(wrapper, textObj, panel);
-  });
-
-  // Arrastrar (solo cuando está en modo edición y se arrastra desde la caja, no el texto)
-  makeDraggable(wrapper, textObj);
-
-  layer.appendChild(wrapper);
-}
-
-function enterEditMode(wrapper, textObj, panel) {
-  wrapper.classList.add('editing');
-}
-
-function exitEditMode(wrapper, textSpan) {
-  wrapper.classList.remove('editing');
-  if (textSpan) textSpan.contentEditable = 'false';
-}
-
-function getBubbleTextObj(id, panel) {
-  return (panel.texts || []).find(t => t.id === id) || null;
-}
-
-function buildTailSVG(tail) {
-  // El triángulo: base arriba, punta abajo → apunta HACIA FUERA del bocadillo
-  return Object.assign(document.createElementNS('http://www.w3.org/2000/svg','svg'), {
-    className: { baseVal: 'bubble-tail tail-' + (tail||'bottom') }
-  });
-  // Usamos innerHTML en el wrapper para simplificar:
-}
-
 // Versión simplificada con innerHTML
 function buildTailSVGStr(tail) {
   return `<svg class="bubble-tail tail-${tail||'bottom'}" viewBox="0 0 30 22" xmlns="http://www.w3.org/2000/svg">
@@ -628,19 +503,28 @@ function renderBubble(textObj, layer, panel) {
     wrapper.classList.add('editing');
   });
 
-  // Cerrar al hacer clic fuera
-  document.addEventListener('click', () => {
-    if (wrapper.classList.contains('editing')) {
-      textObj.text = textDiv.textContent;
-      textDiv.contentEditable = 'false';
-      wrapper.classList.remove('editing');
-      saveComic();
-    }
-  });
-
   makeDraggable(wrapper, textObj);
   layer.appendChild(wrapper);
 }
+
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.bubble-wrapper')) {
+    let changed = false;
+    document.querySelectorAll('.bubble-wrapper.editing').forEach(wrapper => {
+      const textDiv = wrapper.querySelector('.bubble-text');
+      const textId = wrapper.dataset.id;
+      const panel = EditorState.comic?.panels?.[EditorState.activePanelIdx];
+      const textObj = (panel?.texts || []).find(t => t.id === textId);
+      if (textObj && textDiv) {
+        textObj.text = textDiv.textContent;
+        textDiv.contentEditable = 'false';
+        changed = true;
+      }
+      wrapper.classList.remove('editing');
+    });
+    if (changed) saveComic();
+  }
+});
 
 // ════════════════════════════════════════
 // ARRASTRAR BOCADILLO
@@ -731,10 +615,8 @@ function renderTextBlock(textObj, layer, panel) {
 // ════════════════════════════════════════
 function updateTextTools() {
   const idx   = EditorState.activePanelIdx;
-  const hint  = document.getElementById('textsHint');
   const tools = document.getElementById('textTools');
   const has   = EditorState.comic && idx >= 0;
-  if (hint)  hint.style.display  = has ? 'none'  : 'block';
   if (tools) tools.style.display = has ? 'block' : 'none';
   if (has) updateDialogOrderList();
 }

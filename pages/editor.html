@@ -11,11 +11,56 @@
 <body class="editor-page">
 
 
+<div class="editor-toolbar" id="editorToolbar" aria-label="Herramientas del editor">
+  <div class="editor-menus" id="editorMenus" style="display:none">
+    <div class="editor-dropdown">
+      <button class="editor-menu-btn" data-menu="menuVinetas">🖼 Viñetas ▾</button>
+      <div class="editor-dropdown-panel" id="menuVinetas">
+        <div class="edrop-section">
+          <div class="edrop-label" data-i18n="panelOrientation">Orientación</div>
+          <div id="orientationSection">
+            <select id="panelOrientation" class="form-input">
+              <option value="h" data-i18n="horizontal">Horizontal</option>
+              <option value="v" data-i18n="vertical">Vertical</option>
+            </select>
+          </div>
+        </div>
+        <div class="edrop-section" id="uploadSection"></div>
+        <div class="edrop-section">
+          <div class="edrop-label">Orden y lista</div>
+          <div id="panelsList"></div>
+        </div>
+      </div>
+    </div>
+    <div class="editor-dropdown">
+      <button class="editor-menu-btn" data-menu="menuTextos">✍️ Textos ▾</button>
+      <div class="editor-dropdown-panel" id="menuTextos">
+        <div class="edrop-section">
+          <div class="edrop-btns" id="textTools" style="display:none">
+            <button class="btn btn-outline" id="addDialogBtn" data-i18n="addDialog">💬 Bocadillo</button>
+            <button class="btn btn-outline" id="addHeaderBtn" data-i18n="addHeader">📋 Cabecera</button>
+            <button class="btn btn-outline" id="addFooterBtn" data-i18n="addFooter">📝 Pie</button>
+          </div>
+        </div>
+        <div class="edrop-section">
+          <div class="edrop-label" data-i18n="dialogOrder">Orden de aparición</div>
+          <div id="dialogOrderList" class="dialog-order-list"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="editor-actions" id="editorActions" style="display:none">
+    <button class="btn btn-outline editor-btn" id="saveBtn" data-i18n="save">Guardar</button>
+    <button class="btn btn-primary editor-btn" id="publishBtn" data-i18n="publishComic">📖 Publicar</button>
+  </div>
+</div>
+
+
 <!-- PANTALLA 1: Lista de proyectos -->
 <main id="screenProjects" class="projects-screen">
   <div class="projects-header">
-    <h2 class="projects-title">Mis cómics</h2>
-    <button class="btn btn-primary" id="newProjectBtn">✨ Nuevo proyecto</button>
+    <h2 class="projects-title" data-i18n="myComics">Mis cómics</h2>
+    <button class="btn btn-primary" id="newProjectBtn" data-i18n="newProject">✨ Nuevo proyecto</button>
   </div>
   <div class="projects-grid" id="projectsGrid"></div>
 </main>

@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
   buildPanelElements();
   goToPanel(0);
   setupControls();
-  showSwipeHint();
+  enableAndroidFullscreen();
   I18n.applyAll();
 });
 
@@ -274,16 +274,20 @@ function requestOrientationLock(orient) {
   screen.orientation.lock(orient === 'v' ? 'portrait' : 'landscape').catch(() => {});
 }
 
-// ════════════════════════════════════════
-// SWIPE HINT
-// ════════════════════════════════════════
-function showSwipeHint() {
-  const hint = document.getElementById('swipeHint');
-  if (!hint) return;
-  setTimeout(() => { hint.style.opacity = '0'; }, 2500);
-  setTimeout(() => { hint.style.display = 'none'; }, 3200);
-}
 
 function escHtml(str) {
   return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+
+function enableAndroidFullscreen() {
+  const isAndroid = /Android/i.test(navigator.userAgent || "");
+  if (!isAndroid || !document.documentElement.requestFullscreen) return;
+  const trigger = () => {
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(() => {});
+    document.removeEventListener("touchend", trigger);
+    document.removeEventListener("click", trigger);
+  };
+  document.addEventListener("touchend", trigger, { once: true });
+  document.addEventListener("click", trigger, { once: true });
 }

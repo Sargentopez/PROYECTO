@@ -76,6 +76,10 @@ const TRANSLATIONS = {
     publishComic:  "📖 Publicar",
     publishOk:     "¡Cómic publicado!",
     saveOk:        "Guardado",
+    comicUnpublished:"Cómic retirado del índice",
+    homePublished: "Publicaciones",
+    homeLatest:    "Últimos",
+    homeCreate:    "Crear",
   },
   en: {
     tagline:       "Create and share your comics",
@@ -150,6 +154,10 @@ const TRANSLATIONS = {
     publishComic:  "📖 Publish",
     publishOk:     "Comic published!",
     saveOk:        "Saved",
+    comicUnpublished:"Comic removed from index",
+    homePublished: "Published",
+    homeLatest:    "Latest",
+    homeCreate:    "Create",
   }
 };
 
