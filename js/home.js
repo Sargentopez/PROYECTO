@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+
   // Mostrar/ocultar opciones según sesión
   const dotsRegister = document.getElementById('dotsRegister');
   const dotsDelete   = document.getElementById('dotsDeleteAccount');
@@ -107,7 +108,7 @@ function buildRow(comic, currentUser) {
   const readBtn = document.createElement('a');
   readBtn.className = 'comic-row-btn';
   readBtn.href = `pages/reader.html?id=${comic.id}`;
-  readBtn.textContent = 'Leer';
+  readBtn.textContent = I18n.t('read');
   actions.appendChild(readBtn);
 
   if (isOwner) {
@@ -115,7 +116,7 @@ function buildRow(comic, currentUser) {
     const editBtn = document.createElement('a');
     editBtn.className = 'comic-row-btn edit';
     editBtn.href = `pages/editor.html?id=${comic.id}`;
-    editBtn.textContent = 'Editar';
+    editBtn.textContent = I18n.t('edit');
     actions.appendChild(editBtn);
 
     // Dejar de publicar
@@ -127,7 +128,7 @@ function buildRow(comic, currentUser) {
         comic.published = false;
         ComicStore.save(comic);
         renderComics(document.querySelector('.home-filter.active')?.dataset.filter || 'all');
-        showToast('Cómic retirado del índice');
+        showToast(I18n.t('comicUnpublished'));
       }
     });
     actions.appendChild(unpubBtn);

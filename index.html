@@ -14,21 +14,23 @@
 <body>
 
 
+
+
 <!-- ══ FILTROS ══ -->
 <nav class="home-filters">
-  <button class="home-filter active" data-filter="all">Publicaciones</button>
+  <button class="home-filter active" data-filter="all" data-i18n="homePublished">Publicaciones</button>
   <span class="home-filter-sep"></span>
-  <button class="home-filter" data-filter="recent">Últimos</button>
+  <button class="home-filter" data-filter="recent" data-i18n="homeLatest">Últimos</button>
   <span class="home-filter-sep"></span>
-  <button class="home-filter" data-filter="create" id="createBtn">Crear</button>
+  <button class="home-filter" data-filter="create" id="createBtn" data-i18n="homeCreate">Crear</button>
 </nav>
 
 <!-- ══ LISTA ══ -->
 <main class="home-list" id="comicsGrid">
   <div class="home-empty hidden" id="emptyState">
     <span>📚</span>
-    <p>Aún no hay cómics publicados.</p>
-    <p>¡Sé el primero en crear uno!</p>
+    <p data-i18n="noComics">Aún no hay cómics publicados.</p>
+    <p data-i18n="beFirst">¡Sé el primero en crear uno!</p>
   </div>
 </main>
 

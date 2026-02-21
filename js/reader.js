@@ -29,6 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
   buildPanelElements();
   goToPanel(0);
   setupControls();
+  enableAndroidFullscreen();
   showSwipeHint();
   I18n.applyAll();
 });
@@ -286,4 +287,17 @@ function showSwipeHint() {
 
 function escHtml(str) {
   return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+
+function enableAndroidFullscreen() {
+  const isAndroid = /Android/i.test(navigator.userAgent || "");
+  if (!isAndroid || !document.documentElement.requestFullscreen) return;
+  const trigger = () => {
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(() => {});
+    document.removeEventListener("touchend", trigger);
+    document.removeEventListener("click", trigger);
+  };
+  document.addEventListener("touchend", trigger, { once: true });
+  document.addEventListener("click", trigger, { once: true });
 }
