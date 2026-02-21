@@ -70,10 +70,14 @@
   border-bottom: 1.5px solid var(--gray-300);
   background: var(--white);
   padding: 0 14px;
+  position: sticky;
+  top: var(--header-h);
+  z-index: 990;
 }
 .home-filter {
   flex: 1;
-  background: none; border: none;
+  background: none;
+  border: none;
   padding: 11px 4px;
   font-family: var(--font-body);
   font-weight: 700; font-size: 0.88rem;
@@ -84,14 +88,6 @@
 }
 .home-filter:hover { color: var(--ink); }
 .home-filter.active { color: var(--ink); }
-.home-filter.active::after {
-  content: '';
-  position: absolute;
-  bottom: -1.5px; left: 10%; right: 10%;
-  height: 2.5px;
-  background: var(--black);
-  border-radius: 2px;
-}
 .home-filter-sep {
   width: 1px; height: 18px;
   background: var(--gray-300);
@@ -103,6 +99,13 @@
   max-width: var(--max-w);
   margin: 0 auto;
   width: 100%;
+  height: calc(100vh - var(--header-h) - 42px);
+  overflow-y: auto;
+}
+
+.home-page {
+  height: 100vh;
+  overflow: hidden;
 }
 
 /* ── FILA DE CÓMIC ── */
