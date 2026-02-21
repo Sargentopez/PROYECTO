@@ -78,7 +78,8 @@ const TRANSLATIONS = {
     saveOk:        "Guardado",
     comicUnpublished:"Cómic retirado del índice",
     homePublished: "Publicaciones",
-    homeLatest:    "Últimos",
+    homeFilter:    "Filtrar",
+    homeLatest:    "Nuevos",
     homeCreate:    "Crear",
   },
   en: {
@@ -156,7 +157,8 @@ const TRANSLATIONS = {
     saveOk:        "Saved",
     comicUnpublished:"Comic removed from index",
     homePublished: "Published",
-    homeLatest:    "Latest",
+    homeFilter:    "Filter",
+    homeLatest:    "Newest",
     homeCreate:    "Create",
   }
 };

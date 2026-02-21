@@ -11,16 +11,16 @@
   <link rel="stylesheet" href="css/home.css">
   <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Comic+Neue:wght@400;700&family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet">
 </head>
-<body>
+<body class="home-page">
 
 
 
 
 <!-- ══ FILTROS ══ -->
 <nav class="home-filters">
-  <button class="home-filter active" data-filter="all" data-i18n="homePublished">Publicaciones</button>
+  <button class="home-filter" data-filter="filter" id="filterBtn" data-i18n="homeFilter">Filtrar</button>
   <span class="home-filter-sep"></span>
-  <button class="home-filter" data-filter="recent" data-i18n="homeLatest">Últimos</button>
+  <button class="home-filter active" data-filter="recent" data-i18n="homeLatest">Nuevos</button>
   <span class="home-filter-sep"></span>
   <button class="home-filter" data-filter="create" id="createBtn" data-i18n="homeCreate">Crear</button>
 </nav>
