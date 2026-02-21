@@ -76,6 +76,15 @@ const TRANSLATIONS = {
     publishComic:  "📖 Publicar",
     publishOk:     "¡Cómic publicado!",
     saveOk:        "Guardado",
+    comicUnpublished:"Cómic retirado del índice",
+    homePublished: "Publicaciones",
+    homeLatest:    "Últimos",
+    homeCreate:    "Crear",
+    swipeHint:     "👉 Desliza para avanzar",
+    starterGuideTitle: "Guía rápida (primeros pasos)",
+    starterGuideStep1: "1) Pulsa Nuevo proyecto y añade título + subtítulo",
+    starterGuideStep2: "2) En Viñetas, sube imágenes o GIFs y ordénalas arrastrando",
+    starterGuideStep3: "3) En Textos, crea bocadillos/cabeceras/pies y ordénalos",
   },
   en: {
     tagline:       "Create and share your comics",
@@ -150,6 +159,15 @@ const TRANSLATIONS = {
     publishComic:  "📖 Publish",
     publishOk:     "Comic published!",
     saveOk:        "Saved",
+    comicUnpublished:"Comic removed from index",
+    homePublished: "Published",
+    homeLatest:    "Latest",
+    homeCreate:    "Create",
+    swipeHint:     "👉 Swipe to continue",
+    starterGuideTitle: "Quick guide (first steps)",
+    starterGuideStep1: "1) Press New project and add title + subtitle",
+    starterGuideStep2: "2) In Panels, upload images or GIFs and drag to reorder",
+    starterGuideStep3: "3) In Texts, create bubbles/headers/footers and set order",
   }
 };
 

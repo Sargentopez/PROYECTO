@@ -13,22 +13,32 @@
 </head>
 <body>
 
+<section class="home-hero" aria-label="ComicShow inicio">
+  <h1 class="home-hero-title" data-i18n="heroTitle">ComicShow</h1>
+  <p class="home-hero-subtitle" data-i18n="heroSubtitle">Crea y comparte tus cómics</p>
+  <div class="home-hero-actions">
+    <a class="btn btn-primary" id="heroCreateBtn" href="pages/editor.html" data-i18n="createComic">🎨 Crea tu cómic</a>
+    <a class="btn btn-outline" href="pages/register.html" data-i18n="register">Regístrate</a>
+    <a class="btn btn-outline" href="pages/login.html" data-i18n="login">Inicia sesión</a>
+  </div>
+</section>
+
 
 <!-- ══ FILTROS ══ -->
 <nav class="home-filters">
-  <button class="home-filter active" data-filter="all">Publicaciones</button>
+  <button class="home-filter active" data-filter="all" data-i18n="homePublished">Publicaciones</button>
   <span class="home-filter-sep"></span>
-  <button class="home-filter" data-filter="recent">Últimos</button>
+  <button class="home-filter" data-filter="recent" data-i18n="homeLatest">Últimos</button>
   <span class="home-filter-sep"></span>
-  <button class="home-filter" data-filter="create" id="createBtn">Crear</button>
+  <button class="home-filter" data-filter="create" id="createBtn" data-i18n="homeCreate">Crear</button>
 </nav>
 
 <!-- ══ LISTA ══ -->
 <main class="home-list" id="comicsGrid">
   <div class="home-empty hidden" id="emptyState">
     <span>📚</span>
-    <p>Aún no hay cómics publicados.</p>
-    <p>¡Sé el primero en crear uno!</p>
+    <p data-i18n="noComics">Aún no hay cómics publicados.</p>
+    <p data-i18n="beFirst">¡Sé el primero en crear uno!</p>
   </div>
 </main>
 
