@@ -14,13 +14,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  const heroCreateBtn = document.getElementById('heroCreateBtn');
-  heroCreateBtn?.addEventListener('click', (e) => {
-    if (!Auth.isLogged()) {
-      e.preventDefault();
-      window.location.href = 'pages/login.html?redirect=editor';
-    }
-  });
 
   // Mostrar/ocultar opciones según sesión
   const dotsRegister = document.getElementById('dotsRegister');
