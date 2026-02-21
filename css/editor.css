@@ -365,3 +365,11 @@
   .editor-btn      { padding: 7px 10px; font-size: 0.82rem; }
   .projects-grid   { grid-template-columns: 1fr 1fr; gap: 12px; }
 }
+
+
+.editor-toolbar{display:flex;gap:8px;align-items:center;justify-content:space-between;padding:10px 12px;position:sticky;top:64px;background:var(--paper);z-index:600;border-bottom:1px solid var(--gray-300);}
+.starter-guide{max-width:900px;margin:14px auto 0;background:var(--white);border:2px solid var(--black);border-radius:var(--radius-sm);padding:10px 12px;}
+.starter-guide h3{font-size:.95rem;margin-bottom:4px;}
+.starter-guide ol{padding-left:18px;color:var(--gray-700);font-size:.86rem;}
+.dialog-order-list{display:flex;flex-direction:column;gap:6px;}
+@media(max-width:600px){.editor-toolbar{top:64px;flex-wrap:wrap;}.editor-menus,.editor-actions{width:100%;justify-content:space-between;}}
