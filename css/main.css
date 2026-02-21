@@ -333,3 +333,37 @@ a { color: inherit; text-decoration: none; }
   .site-header { padding-top: env(safe-area-inset-top); }
   body { padding-bottom: env(safe-area-inset-bottom); }
 }
+
+/* ══════════════════════════════════════════
+   Cabecera global (inyectada por header.js)
+   ══════════════════════════════════════════ */
+.home-header { height: auto; min-height: var(--header-h); }
+.home-header-inner {
+  display: flex; align-items: center;
+  justify-content: space-between;
+  padding: 8px 14px; gap: 8px; height: 100%;
+}
+.home-logo-area {
+  display: flex; flex-direction: column;
+  align-items: flex-start; flex-shrink: 0;
+}
+.home-logo-area .logo-main { font-size: 1.8rem; line-height: 1; }
+.home-tagline {
+  font-size: 0.65rem; font-weight: 700;
+  color: var(--gray-700); white-space: nowrap;
+  line-height: 1.2; margin-top: 1px;
+}
+.home-user-area { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.home-guest     { display: flex; align-items: center; gap: 5px; font-size: 0.78rem; font-weight: 700; white-space: nowrap; }
+.home-logged    { display: flex; align-items: center; gap: 8px; }
+.home-user-link { color: var(--ink); text-decoration: none; font-size: 0.78rem; font-weight: 700; background: none; border: none; cursor: pointer; padding: 0; font-family: var(--font-body); }
+.home-user-link:hover { text-decoration: underline; }
+.home-user-sep  { color: var(--gray-300); font-size: 0.7rem; }
+.home-username  { font-size: 0.78rem; font-weight: 700; color: var(--gray-700); max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.home-dots-btn  { background: none; border: none; font-size: 1.3rem; cursor: pointer; color: var(--gray-700); padding: 2px 4px; line-height: 1; flex-shrink: 0; }
+.home-dots-btn:hover { color: var(--black); }
+
+.dropdown-divider    { height: 1px; background: var(--gray-100); margin: 4px 0; }
+.danger-item         { color: var(--red) !important; }
+.disabled-item       { color: var(--gray-300) !important; pointer-events: none; cursor: default; }
+.dropdown-menu-right { left: auto !important; right: 0; }

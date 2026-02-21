@@ -13,56 +13,6 @@
 </head>
 <body>
 
-<!-- ══ CABECERA ══ -->
-<header class="site-header home-header">
-  <div class="home-header-inner">
-
-    <div class="home-logo-area">
-      <a href="index.html" class="logo-link">
-        <span class="logo-main">Comic<span class="logo-accent">Show</span></span>
-      </a>
-      <span class="home-tagline">Crea y comparte tus cómics</span>
-    </div>
-
-    <div class="home-user-area">
-
-      <!-- Sin sesión -->
-      <div id="navGuest" class="home-guest">
-        <a href="pages/register.html" class="home-user-link">Regístrate</a>
-        <span class="home-user-sep">·</span>
-        <a href="pages/login.html" class="home-user-link">Entrar</a>
-      </div>
-
-      <!-- Con sesión: nombre como desplegable -->
-      <div id="navLogged" class="home-logged hidden">
-        <div class="dropdown">
-          <button class="home-user-link" id="avatarBtn" style="background:none;border:none;cursor:pointer;font-size:.8rem;font-weight:700;color:var(--ink);padding:0">
-            <span id="navUsername"></span> ▾
-          </button>
-          <div class="dropdown-menu" id="avatarMenu">
-            <a href="pages/editor.html" class="dropdown-item">Mis cómics</a>
-            <div class="dropdown-divider"></div>
-            <a href="#" class="dropdown-item" id="logoutBtn">Cerrar sesión</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- ⋮ Menú de opciones generales -->
-      <div class="dropdown">
-        <button class="home-dots-btn" id="dotsBtn" title="Más opciones">⋮</button>
-        <div class="dropdown-menu dropdown-menu-right" id="dotsMenu">
-          <a href="pages/register.html" class="dropdown-item" id="dotsRegister">Registrarse</a>
-          <a href="#" class="dropdown-item danger-item" id="dotsDeleteAccount">Eliminar mi cuenta</a>
-          <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item disabled-item">ℹ️ Info</a>
-          <a href="#" class="dropdown-item disabled-item">✉️ Contacto</a>
-          <a href="#" class="dropdown-item disabled-item">☕ Invítame a un café</a>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</header>
 
 <!-- ══ FILTROS ══ -->
 <nav class="home-filters">
@@ -85,6 +35,8 @@
 <div class="toast" id="toast"></div>
 
 <script src="js/i18n.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/header.js"></script>
 <script src="js/auth.js"></script>
 <script src="js/storage.js"></script>
 <script src="js/home.js"></script>

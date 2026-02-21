@@ -10,87 +10,6 @@
 </head>
 <body class="editor-page">
 
-<header class="site-header home-header editor-site-header">
-  <div class="editor-header-inner">
-
-    <div class="home-logo-area">
-      <a href="../index.html" class="logo-link">
-        <span class="logo-main">Comic<span class="logo-accent">Show</span></span>
-      </a>
-      <span class="home-tagline">Crea y comparte tus cómics</span>
-    </div>
-
-    <!-- Menús (aparecen solo cuando hay proyecto activo) -->
-    <nav class="editor-menus" id="editorMenus" style="display:none">
-
-      <div class="editor-dropdown">
-        <button class="editor-menu-btn" data-menu="menuVinetas">🖼 Viñetas ▾</button>
-        <div class="editor-dropdown-panel" id="menuVinetas">
-          <div class="edrop-section" id="uploadSection">
-            <p class="edrop-hint">Crea un proyecto primero</p>
-          </div>
-          <div class="edrop-section" id="orientationSection" style="display:none">
-            <label class="edrop-label">Orientación de esta viñeta:</label>
-            <select id="panelOrientation" class="form-input form-select">
-              <option value="h">↔ Horizontal</option>
-              <option value="v">↕ Vertical</option>
-            </select>
-          </div>
-          <div class="edrop-section">
-            <div class="panels-list" id="panelsList"></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="editor-dropdown">
-        <button class="editor-menu-btn" data-menu="menuTextos">💬 Textos ▾</button>
-        <div class="editor-dropdown-panel" id="menuTextos">
-          <div class="edrop-section">
-            <p class="edrop-hint" id="textsHint">Selecciona una viñeta primero</p>
-            <div id="textTools" style="display:none">
-              <div class="edrop-btns">
-                <button class="btn btn-outline btn-full" id="addDialogBtn">💬 Bocadillo de diálogo</button>
-                <button class="btn btn-outline btn-full" id="addHeaderBtn">📋 Texto cabecera</button>
-                <button class="btn btn-outline btn-full" id="addFooterBtn">📝 Texto pie</button>
-              </div>
-              <div style="margin-top:14px">
-                <p class="edrop-label">Orden de aparición en lectura:</p>
-                <div id="dialogOrderList" class="dialog-order-list"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </nav>
-
-    <!-- Guardar / Publicar -->
-    <div class="editor-actions" id="editorActions" style="display:none">
-      <button class="btn btn-outline editor-btn" id="saveBtn">💾 Guardar</button>
-      <button class="btn btn-primary editor-btn" id="publishBtn">📖 Publicar</button>
-    </div>
-
-    <!-- Usuario -->
-    <div class="home-user-area">
-      <div id="navLogged" class="home-logged hidden">
-        <div class="dropdown">
-          <button class="home-user-link" id="avatarBtn" style="background:none;border:none;cursor:pointer;font-size:.8rem;font-weight:700;color:var(--ink);padding:0">
-            <span id="navUsername"></span> ▾
-          </button>
-          <div class="dropdown-menu" id="avatarMenu">
-            <a href="editor.html" class="dropdown-item">Mis Cómics</a>
-            <a href="#" class="dropdown-item" id="logoutBtn">Cerrar sesión</a>
-          </div>
-        </div>
-      </div>
-      <div id="navGuest" class="home-guest hidden">
-        <a href="login.html" class="home-user-link">Entrar</a>
-      </div>
-      <button class="home-dots-btn" title="Más opciones">⋮</button>
-    </div>
-
-  </div>
-</header>
 
 <!-- PANTALLA 1: Lista de proyectos -->
 <main id="screenProjects" class="projects-screen">
@@ -162,6 +81,8 @@
 <div class="toast" id="toast"></div>
 
 <script src="../js/i18n.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/header.js"></script>
 <script src="../js/auth.js"></script>
 <script src="../js/storage.js"></script>
 <script src="../js/editor.js"></script>
