@@ -4,6 +4,7 @@
 
 document.addEventListener('DOMContentLoaded', () => {
   Auth.updateNavUI();
+  Auth.setupDropdowns(); // registrar listeners tras mostrar navLogged
   renderComics('all');
   setupFilters();
   // Botón Crear

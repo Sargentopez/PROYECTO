@@ -79,13 +79,32 @@ const Auth = (() => {
     }
   }
 
+  // ── Helper dropdown (reutilizable) ──
+  function toggleMenu(btn, menu) {
+    if (!btn || !menu) return;
+    // Evitar registrar el listener dos veces
+    if (btn._dropdownBound) return;
+    btn._dropdownBound = true;
+
+    function open(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      const isOpen = menu.classList.contains('open');
+      document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('open'));
+      if (!isOpen) menu.classList.add('open');
+    }
+    btn.addEventListener('mousedown', open);
+    btn.addEventListener('touchend', open);
+  }
+
   // ── Wiring de botones comunes ──
   document.addEventListener('DOMContentLoaded', () => {
-    updateNavUI();
+    updateNavUI();      // muestra/oculta navLogged/navGuest
+    setupDropdowns();   // registra listeners DESPUÉS de que el DOM esté visible
 
     // Hamburger
-    const ham   = document.getElementById('hamburgerBtn');
-    const nav   = document.getElementById('mainNav');
+    const ham = document.getElementById('hamburgerBtn');
+    const nav = document.getElementById('mainNav');
     if (ham && nav) {
       ham.addEventListener('click', () => {
         ham.classList.toggle('open');
@@ -93,34 +112,7 @@ const Auth = (() => {
       });
     }
 
-    // ── Dropdowns: avatar y ⋮ ──
-    // Usamos mousedown en lugar de click para evitar que el
-    // listener del documento los cierre en el mismo evento
-    function toggleMenu(btn, menu) {
-      if (!btn || !menu) return;
-      btn.addEventListener('mousedown', (e) => {
-        e.preventDefault(); // evita que el foco cambie y dispare blur
-        e.stopPropagation();
-        const isOpen = menu.classList.contains('open');
-        // Cerrar todos
-        document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('open'));
-        // Abrir este si estaba cerrado
-        if (!isOpen) menu.classList.add('open');
-      });
-      // Touch support
-      btn.addEventListener('touchend', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        const isOpen = menu.classList.contains('open');
-        document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('open'));
-        if (!isOpen) menu.classList.add('open');
-      });
-    }
-
-    toggleMenu(document.getElementById('avatarBtn'), document.getElementById('avatarMenu'));
-    toggleMenu(document.getElementById('dotsBtn'),   document.getElementById('dotsMenu'));
-
-    // Cerrar al hacer clic fuera (en mousedown para consistencia)
+    // Cerrar dropdowns al hacer clic/touch fuera
     document.addEventListener('mousedown', (e) => {
       if (!e.target.closest('.dropdown')) {
         document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('open'));
@@ -143,7 +135,7 @@ const Auth = (() => {
       });
     }
 
-    // Eliminar cuenta (si existe el botón)
+    // Eliminar cuenta
     const deleteAccountBtn = document.getElementById('dotsDeleteAccount');
     if (deleteAccountBtn) {
       deleteAccountBtn.addEventListener('click', (e) => {
@@ -151,7 +143,6 @@ const Auth = (() => {
         if (!isLogged()) { showToast('No hay sesión iniciada'); return; }
         if (confirm('Si eliminas tu cuenta se borrarán todos tus datos y cómics.\n\nEsta acción no se puede deshacer.')) {
           const user = currentUser();
-          // Eliminar cómics del usuario
           const ComicStoreRef = window.ComicStore;
           if (ComicStoreRef) ComicStoreRef.getByUser(user.id).forEach(c => ComicStoreRef.remove(c.id));
           deleteAccount();
@@ -160,6 +151,11 @@ const Auth = (() => {
       });
     }
   });
+
+  function setupDropdowns() {
+    toggleMenu(document.getElementById('avatarBtn'), document.getElementById('avatarMenu'));
+    toggleMenu(document.getElementById('dotsBtn'),   document.getElementById('dotsMenu'));
+  }
 
   // ── Utilidad de rutas ──
   function getRootPath() {
@@ -176,7 +172,7 @@ const Auth = (() => {
     logout();
   }
 
-  return { register, login, logout, deleteAccount, currentUser, isLogged, updateNavUI, getRootPath };
+  return { register, login, logout, deleteAccount, currentUser, isLogged, updateNavUI, setupDropdowns, getRootPath };
 })();
 
 // ── Toast global ──
