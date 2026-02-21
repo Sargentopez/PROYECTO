@@ -122,7 +122,16 @@ const Auth = (() => {
     return p.includes('/pages/') ? '../' : '';
   }
 
-  return { register, login, logout, currentUser, isLogged, updateNavUI, getRootPath };
+  function deleteAccount() {
+    const user = currentUser();
+    if (!user) return;
+    const users = JSON.parse(localStorage.getItem('cs_users') || '[]')
+      .filter(u => u.id !== user.id);
+    localStorage.setItem('cs_users', JSON.stringify(users));
+    localStorage.removeItem('cs_session');
+  }
+
+  return { register, login, logout, deleteAccount, currentUser, isLogged, updateNavUI, getRootPath };
 })();
 
 // ── Toast global ──

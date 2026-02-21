@@ -196,3 +196,17 @@
   .comic-row-thumb img { width: 88px; height: 88px; min-width: 88px; max-width: 88px; }
   .comic-row-title { font-size: 1rem; }
 }
+
+/* ── EXTRAS DROPDOWN ── */
+.dropdown-divider {
+  height: 1px;
+  background: var(--gray-100);
+  margin: 4px 0;
+}
+.danger-item { color: var(--red) !important; }
+.disabled-item { color: var(--gray-300) !important; pointer-events: none; }
+.dropdown-menu-right { left: auto; right: 0; }
+
+/* Botones owner en fila */
+.comic-row-btn.unpub { color: var(--gray-500); }
+.comic-row-btn.del   { color: var(--red); }
