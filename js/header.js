@@ -4,32 +4,62 @@
    ============================================================ */
 
 (function () {
-  // Detectar ruta base según si estamos en /pages/ o en raíz
   const inPages = window.location.pathname.includes('/pages/');
-  const root    = inPages ? '../' : '';
+  const root = inPages ? '../' : '';
+  const path = window.location.pathname;
 
-  // ── HTML de la cabecera ──
+  function getPageConfig() {
+    if (path.endsWith('/pages/editor.html')) {
+      return {
+        label: 'Editor',
+        links: `<a href="${root}index.html" class="menu-chip-link">🏠 Inicio</a>`
+      };
+    }
+    if (path.endsWith('/pages/login.html')) {
+      return {
+        label: 'Entrar',
+        links: `<a href="${root}pages/register.html" class="menu-chip-link">📝 Crear cuenta</a>`
+      };
+    }
+    if (path.endsWith('/pages/register.html')) {
+      return {
+        label: 'Registro',
+        links: `<a href="${root}pages/login.html" class="menu-chip-link">🔐 Iniciar sesión</a>`
+      };
+    }
+
+    return {
+      label: 'Inicio',
+      links: `<span class="menu-chip-link current">📚 Explorar</span>`
+    };
+  }
+
+  const pageCfg = getPageConfig();
+
   const headerHTML = `
     <header class="site-header home-header" id="siteHeader">
-      <div class="home-header-inner">
-
+      <div class="title-bar" id="titleBar">
         <div class="home-logo-area">
           <a href="${root}index.html" class="logo-link">
             <span class="logo-main">Comic<span class="logo-accent">Show</span></span>
           </a>
           <span class="home-tagline">Crea y comparte tus cómics</span>
         </div>
+      </div>
 
-        <div class="home-user-area">
+      <div class="menu-bar" id="menuBar" aria-label="Barra de menús">
+        <div class="menu-left">
+          <span class="menu-page-label">${pageCfg.label}</span>
+          ${pageCfg.links}
+        </div>
 
-          <!-- Sin sesión -->
+        <div class="menu-right">
           <div id="navGuest" class="home-guest">
             <a href="${root}pages/register.html" class="home-user-link">Regístrate</a>
             <span class="home-user-sep">·</span>
             <a href="${root}pages/login.html" class="home-user-link">Entrar</a>
           </div>
 
-          <!-- Con sesión -->
           <div id="navLogged" class="home-logged" style="display:none">
             <div class="dropdown">
               <button class="home-user-link" id="avatarBtn"
@@ -44,7 +74,6 @@
             </div>
           </div>
 
-          <!-- ⋮ opciones generales -->
           <div class="dropdown">
             <button class="home-dots-btn" id="dotsBtn" title="Más opciones">⋮</button>
             <div class="dropdown-menu dropdown-menu-right" id="dotsMenu">
@@ -56,41 +85,49 @@
               <span class="dropdown-item disabled-item">☕ Invítame a un café</span>
             </div>
           </div>
-
         </div>
       </div>
     </header>`;
 
-  // ── Inyectar cabecera al inicio del body ──
   document.body.insertAdjacentHTML('afterbegin', headerHTML);
 
-  // ── Esperar a que el DOM esté listo y luego inicializar ──
-  function init() {
-    const user = Auth.currentUser();
+  function syncHeaderHeight() {
+    const titleBar = document.getElementById('titleBar');
+    const menuBar = document.getElementById('menuBar');
+    const titleH = titleBar ? titleBar.offsetHeight : 0;
+    const menuH = menuBar ? menuBar.offsetHeight : 0;
+    const total = titleH + menuH || 64;
 
-    // Mostrar estado de sesión
-    const navGuest  = document.getElementById('navGuest');
+    document.documentElement.style.setProperty('--titlebar-h', `${titleH}px`);
+    document.documentElement.style.setProperty('--menubar-h', `${menuH}px`);
+    document.documentElement.style.setProperty('--header-h', `${total}px`);
+  }
+
+  function init() {
+    syncHeaderHeight();
+
+    const user = Auth.currentUser();
+    const navGuest = document.getElementById('navGuest');
     const navLogged = document.getElementById('navLogged');
-    const navName   = document.getElementById('navUsername');
-    const dotsReg   = document.getElementById('dotsRegister');
-    const dotsDel   = document.getElementById('dotsDeleteAccount');
+    const navName = document.getElementById('navUsername');
+    const dotsReg = document.getElementById('dotsRegister');
+    const dotsDel = document.getElementById('dotsDeleteAccount');
 
     if (user) {
-      navGuest.style.display  = 'none';
+      navGuest.style.display = 'none';
       navLogged.style.display = 'flex';
       if (navName) navName.textContent = user.username;
       if (dotsReg) dotsReg.style.display = 'none';
       if (dotsDel) dotsDel.style.display = 'block';
     } else {
-      navGuest.style.display  = 'flex';
+      navGuest.style.display = 'flex';
       navLogged.style.display = 'none';
       if (dotsReg) dotsReg.style.display = 'block';
       if (dotsDel) dotsDel.style.display = 'none';
     }
 
-    // ── Dropdowns ──
     function bindDropdown(btnId, menuId) {
-      const btn  = document.getElementById(btnId);
+      const btn = document.getElementById(btnId);
       const menu = document.getElementById(menuId);
       if (!btn || !menu) return;
       btn.addEventListener('click', (e) => {
@@ -102,23 +139,20 @@
     }
 
     bindDropdown('avatarBtn', 'avatarMenu');
-    bindDropdown('dotsBtn',   'dotsMenu');
+    bindDropdown('dotsBtn', 'dotsMenu');
 
-    // Cerrar al clicar fuera
     document.addEventListener('click', (e) => {
       if (!e.target.closest('.dropdown')) {
         document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('open'));
       }
     });
 
-    // ── Cerrar sesión ──
     document.getElementById('logoutBtn')?.addEventListener('click', (e) => {
       e.preventDefault();
       Auth.logout();
       window.location.href = root + 'index.html';
     });
 
-    // ── Eliminar cuenta ──
     document.getElementById('dotsDeleteAccount')?.addEventListener('click', (e) => {
       e.preventDefault();
       if (!Auth.isLogged()) return;
@@ -129,12 +163,18 @@
         window.location.href = root + 'index.html';
       }
     });
+
+    syncHeaderHeight();
   }
 
-  // Ejecutar init cuando el DOM esté listo
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
   } else {
     init();
   }
+
+  window.addEventListener('resize', syncHeaderHeight);
+  window.addEventListener('orientationchange', syncHeaderHeight);
+  window.addEventListener('load', syncHeaderHeight);
+  requestAnimationFrame(syncHeaderHeight);
 })();
