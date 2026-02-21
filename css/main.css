@@ -91,12 +91,15 @@ a { color: inherit; text-decoration: none; }
   position: sticky;
   top: 0;
   z-index: 1000;
+  display: flex;
+  flex-direction: column;
   background: var(--yellow);
   border-bottom: 3px solid var(--black);
   box-shadow: 0 3px 0 var(--black);
 }
 .title-bar,
 .menu-bar {
+  width: 100%;
   max-width: var(--max-w);
   margin: 0 auto;
   padding: 8px 14px;
@@ -106,9 +109,11 @@ a { color: inherit; text-decoration: none; }
   gap: 10px;
 }
 .title-bar {
-  border-bottom: 1.5px solid rgba(26,26,26,.2);
+  border-bottom: 0;
 }
 .menu-bar {
+  margin-top: 0;
+  border-top: 1.5px solid rgba(26,26,26,.2);
   background: rgba(255,255,255,.55);
 }
 .menu-left,
