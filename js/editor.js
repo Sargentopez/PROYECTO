@@ -615,10 +615,8 @@ function renderTextBlock(textObj, layer, panel) {
 // ════════════════════════════════════════
 function updateTextTools() {
   const idx   = EditorState.activePanelIdx;
-  const hint  = document.getElementById('textsHint');
   const tools = document.getElementById('textTools');
   const has   = EditorState.comic && idx >= 0;
-  if (hint)  hint.style.display  = has ? 'none'  : 'block';
   if (tools) tools.style.display = has ? 'block' : 'none';
   if (has) updateDialogOrderList();
 }

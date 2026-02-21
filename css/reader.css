@@ -223,16 +223,3 @@
 .end-icon { font-size: 3rem; }
 .end-card h2 { font-family: var(--font-display); font-size: 2rem; letter-spacing: 2px; }
 .end-actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
-
-/* ── SWIPE HINT (solo móvil) ── */
-.swipe-hint {
-  position: fixed;
-  bottom: 24px; left: 50%; transform: translateX(-50%);
-  background: rgba(0,0,0,.65);
-  color: var(--white);
-  padding: 8px 20px; border-radius: 20px;
-  font-size: 0.85rem; font-weight: 700;
-  z-index: 300; transition: opacity .6s;
-  pointer-events: none;
-}
-@media(min-width:601px) { .swipe-hint { display: none; } }
