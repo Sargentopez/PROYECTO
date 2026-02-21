@@ -93,36 +93,43 @@ const Auth = (() => {
       });
     }
 
-    // Dropdown avatar / nombre usuario
-    const avatarBtn  = document.getElementById('avatarBtn');
-    const avatarMenu = document.getElementById('avatarMenu');
-    if (avatarBtn && avatarMenu) {
-      avatarBtn.addEventListener('click', (e) => {
+    // ── Dropdowns: avatar y ⋮ ──
+    // Usamos mousedown en lugar de click para evitar que el
+    // listener del documento los cierre en el mismo evento
+    function toggleMenu(btn, menu) {
+      if (!btn || !menu) return;
+      btn.addEventListener('mousedown', (e) => {
+        e.preventDefault(); // evita que el foco cambie y dispare blur
         e.stopPropagation();
-        avatarMenu.classList.toggle('open');
-        document.getElementById('dotsMenu')?.classList.remove('open');
+        const isOpen = menu.classList.contains('open');
+        // Cerrar todos
+        document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('open'));
+        // Abrir este si estaba cerrado
+        if (!isOpen) menu.classList.add('open');
       });
-    } else {
-      console.warn('[Auth] avatarBtn o avatarMenu no encontrado', {avatarBtn, avatarMenu});
+      // Touch support
+      btn.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const isOpen = menu.classList.contains('open');
+        document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('open'));
+        if (!isOpen) menu.classList.add('open');
+      });
     }
 
-    // Dropdown ⋮ tres puntos
-    const dotsBtn  = document.getElementById('dotsBtn');
-    const dotsMenu = document.getElementById('dotsMenu');
-    if (dotsBtn && dotsMenu) {
-      dotsBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        dotsMenu.classList.toggle('open');
-        avatarMenu?.classList.remove('open');
-      });
-    } else {
-      console.warn('[Auth] dotsBtn o dotsMenu no encontrado', {dotsBtn, dotsMenu});
-    }
+    toggleMenu(document.getElementById('avatarBtn'), document.getElementById('avatarMenu'));
+    toggleMenu(document.getElementById('dotsBtn'),   document.getElementById('dotsMenu'));
 
-    // Cerrar todos los dropdowns al hacer clic fuera
-    document.addEventListener('click', () => {
-      document.getElementById('avatarMenu')?.classList.remove('open');
-      document.getElementById('dotsMenu')?.classList.remove('open');
+    // Cerrar al hacer clic fuera (en mousedown para consistencia)
+    document.addEventListener('mousedown', (e) => {
+      if (!e.target.closest('.dropdown')) {
+        document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('open'));
+      }
+    });
+    document.addEventListener('touchend', (e) => {
+      if (!e.target.closest('.dropdown')) {
+        document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('open'));
+      }
     });
 
     // Logout
